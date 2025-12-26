@@ -63,8 +63,3 @@ This roadmap outlines a progression from fundamental gradient-free methods to st
 - **Implementation Tasks**:
     - [ ] **Safety Gym**: Train an agent that must navigate a maze while avoiding "hazards" (constraints).
     - [ ] Compare "Reward Shaping" (negative reward for hazards) vs. "Constrained RL" (hard limits).
-
-## Next Steps
-Start with **Phase 1** in the `evolutionary-ai` folder.
-1. Create a `simple_es.py` to solve CartPole.
-2. Visualize the population spread to understand exploration.
