@@ -6,7 +6,7 @@ This repository consolidates research ideas for mechanistic interpretability pro
 
 ## Status
 
-Currently in the **exploration phase** - 5 research ideas documented. All ideas are designed for the 20-hour application sprint format and address Neel Nanda's specific requests for "evidence for and against" hypotheses regarding safety-relevant behaviors.
+Currently in the **exploration phase** - 6 research ideas documented. All ideas are designed for the 20-hour application sprint format and address Neel Nanda's specific requests for "evidence for and against" hypotheses regarding safety-relevant behaviors.
 
 ## Research Ideas
 
@@ -17,6 +17,7 @@ Currently in the **exploration phase** - 5 research ideas documented. All ideas 
 | [research-idea-3](research-idea-3/) | The Anatomy of Refusal: Decomposing the "Jailbreak" Mechanism | Model Biology / Safety Filters | Medium | Documented |
 | [research-idea-4](research-idea-4/) | Sparse Probing for "Sleeping" Capabilities | Applied Interpretability / Monitoring | Medium | Documented |
 | [research-idea-5](research-idea-5/) | Cross-Modal Semantics in Gemma 3 | Frontier Model Biology / Multimodal | High | Documented |
+| [research-idea-6](research-idea-6/) | From Inference to Pandering: User Modeling and Sycophancy Circuits | Model Biology / Science of Misalignment | High | Documented |
 
 ### Alignment with Nanda's Criteria
 
@@ -27,6 +28,7 @@ Currently in the **exploration phase** - 5 research ideas documented. All ideas 
 | 3. Refusal Anatomy | Fixing Safety Filters | Granular ablation analysis | Is safety modular or monolithic? |
 | 4. Sparse Probing | Better Monitors | Challenging recent baselines | Do SAEs help extracting "hidden" knowledge? |
 | 5. Multimodal Semantics | Understanding New Architectures | Using Gemma 3 (very new) | Are concepts modality-invariant? |
+| 6. User Modeling & Sycophancy | Fixing Sycophancy | Cross-Coders for Base vs Chat | How does RLHF create user modeling circuits? |
 
 ## Sources
 
