@@ -1,6 +1,8 @@
 # Mechanistic Decomposition of Chain-of-Thought Reasoning in Open-Weight Models
 
-## Research Project for Neel Nanda MATS Stream (Summer 2026)
+## Self-Directed Learning Project in Mechanistic Interpretability
+
+> **Note**: This project was originally planned as an application for Neel Nanda's MATS Stream (Summer 2026). Unfortunately, I was unable to complete the work within the application timeline. However, since all the research documentation, methodology, and resources are available, I'm continuing this as a **self-directed learning project** for curiosity and skill development in mechanistic interpretability.
 
 ---
 
@@ -26,8 +28,8 @@ Understanding self-correction mechanisms directly connects to **deceptive alignm
 - The same architecture might check "Am I being watched?" for deception
 - Characterizing benign monitors helps us detect malign ones
 
-### Strategic Alignment with Neel Nanda's Priorities
-| Priority | How This Project Addresses It |
+### Alignment with Current Interpretability Research
+| Research Direction | How This Project Addresses It |
 |----------|------------------------------|
 | **"Thinking Models"** | Directly investigates CoT reasoning mechanics |
 | **Pragmatic Interpretability** | Uses tools to solve concrete safety problems |
@@ -235,7 +237,7 @@ The Monitor-Inhibition model maps directly to deception concerns:
 
 **If we can find the benign monitor, we may detect the malign one.**
 
-### Contribution to MATS Research Agenda
+### Contribution to AI Safety Research
 
 This project contributes to:
 1. **Science of Misalignment**: Understanding how models internally represent "checking"
@@ -342,14 +344,27 @@ Neel_Nanda/
 
 ---
 
-## Contact & Resources
+## Resources & References
 
-- **MATS Program**: [matsprogram.org](https://matsprogram.org)
-- **Neel Nanda Stream**: [matsprogram.org/stream/nanda](https://matsprogram.org/stream/nanda)
 - **Gemma Scope 2**: [Alignment Forum Announcement](https://www.alignmentforum.org/posts/YQro5LyYjDzZrBCdb/announcing-gemma-scope-2)
 - **Neuronpedia**: [neuronpedia.org](https://neuronpedia.org)
+- **TransformerLens**: [github.com/neelnanda-io/TransformerLens](https://github.com/neelnanda-io/TransformerLens)
+- **SAELens**: [github.com/jbloomAus/SAELens](https://github.com/jbloomAus/SAELens)
+- **MATS Program**: [matsprogram.org](https://matsprogram.org)
+- **Neel Nanda's Research**: [neelnanda.io](https://neelnanda.io)
+
+---
+
+## Project Status
+
+**Status**: Self-directed learning project (ongoing)
+
+**Original goal**: MATS Summer 2026 application
+**Current goal**: Personal skill development in mechanistic interpretability
+
+All research planning, methodology, and documentation remain valid and can be followed at your own pace. The 4-week timeline can be adapted as needed for self-study.
 
 ---
 
 *Project initialized: January 2026*
-*Target: MATS Summer 2026 Application*
+*Updated: Converted to self-directed learning project*
