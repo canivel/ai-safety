@@ -1,65 +1,355 @@
-# Roadmap: From Evolutionary Strategies to Safe World Models
+# Mechanistic Decomposition of Chain-of-Thought Reasoning in Open-Weight Models
 
-This roadmap outlines a progression from fundamental gradient-free methods to state-of-the-art Reinforcement Learning (RL) techniques used in Large Language Model (LLM) alignment and AI Safety research.
+## Research Project for Neel Nanda MATS Stream (Summer 2026)
 
-## Phase 1: The Evolutionary Foundation (Gradient-Free)
-**Goal**: Understand optimization without explicit gradients, aiming for robustness and diversity.
-**Relevance to Safety**: ES is crucial for *Red Teaming*—finding adversarial examples or "jailbreaks" where gradient-based methods might get stuck in local optima.
+---
 
-### 1. Evolutionary Strategies (ES) & Genetic Algorithms
-- **Concepts**: Population-based search, Mutation/Crossover, Fitness evaluation, Covariance Matrix Adaptation (CMA-ES).
-- **Implementation Tasks**:
-    - [ ] Implement simple Genetic Algorithm (GA) for a classic control problem (CartPole/LunarLander).
-    - [ ] Implement Simple ES (OpenAI ES) to train a small neural network.
-    - [ ] **Safety Angle**: Use ES to find inputs that cause a pre-trained agent to fail (Adversarial Attack).
+## Executive Summary
 
-## Phase 2: Policy Gradients & Stability (The RLHF Workhorse)
-**Goal**: Master the standard algorithms used for Reinforcement Learning from Human Feedback (RLHF).
+This project investigates the **internal mechanisms of self-correction in Chain-of-Thought (CoT) reasoning** using Gemma Scope 2's Sparse Autoencoders (SAEs) and Transcoders. We aim to identify and characterize the "Monitor-Inhibition" circuit that enables language models to detect errors and trigger correction behaviors (e.g., "Wait, that's wrong...").
 
-### 2. Proximal Policy Optimization (PPO)
-- **Concepts**: Trust regions, Clipped surrogate objective, Actor-Critic architecture, GAE (Generalized Advantage Estimation).
-- **Implementation Tasks**:
-    - [ ] Solve a continuous control environment (MuJoCo/BipedalWalker) with PPO.
-    - [ ] **LLM Integration**: Fine-tune a small language model (e.g., GPT-2 or TinyLlama) to output positive sentiment using a frozen Sentiment Reward Model.
-    - [ ] **Safety Angle**: Observe "Reward Hacking" (e.g., model outputting repetitive high-reward gibberish) and try to mitigate it with KL-divergence penalties.
+**Title:** *Tracing the "Aha!" Moment: Circuit Analysis of Self-Correction in Chain-of-Thought Reasoning using Gemma Scope Transcoders*
 
-## Phase 3: Preference Optimization (Modern Alignment)
-**Goal**: Move away from complex Reward Model training towards direct policy optimization.
+---
 
-### 3. Direct Preference Optimization (DPO)
-- **Concepts**: Implicit reward formulation, Bradley-Terry model, Reference model regularization.
-- **Implementation Tasks**:
-    - [ ] Implement the DPO loss function manually.
-    - [ ] Train a model on a preference dataset (e.g., Anthropic HH-RLHF subset).
-    - [ ] **Comparison**: Compare stability and computational cost of DPO vs. PPO.
+## Why This Research Matters
 
-## Phase 4: Advanced Group Dynamics & Reasoning
-**Goal**: Optimize for complex reasoning chains and handling distribution shifts, key for "Chain of Thought" safety.
+### The Problem
+Modern "thinking models" (OpenAI o1, DeepSeek-R1) demonstrate remarkable self-correction abilities during extended reasoning chains. But we don't understand **how** this works internally:
+- Does the model engage in structured search with backtracking?
+- Or is it "rolling the dice" and getting lucky?
+- What internal signals trigger the "Wait, that's wrong" moment?
 
-### 4. Group Relative Policy Optimization (GRPO)
-- **Concepts**: Sampling groups of outputs for the same prompt, determining relative advantages within the group rather than absolute rewards. Used in models like DeepSeekMath to improve reasoning.
-- **Implementation Tasks**:
-    - [ ] Implement "Group Sampling" during training.
-    - [ ] Train on a math or logic dataset where answers can be verified (Binary reward: Correct/Incorrect), assessing if the group mean acts as a good baseline.
+### The Safety Implications
+Understanding self-correction mechanisms directly connects to **deceptive alignment** concerns:
+- If models have internal "monitors" that check reasoning correctness
+- The same architecture might check "Am I being watched?" for deception
+- Characterizing benign monitors helps us detect malign ones
 
-### 5. Multi-Group Relative Policy Optimization (MGRPO) & Beyond
-- **Concepts**: Handling multiple conflicting objectives (e.g., Safety vs. Helpfulness) by creating groups that optimize for different pareto frontiers.
-- **Implementation Tasks**:
-    - [ ] Setup a multi-objective scenario (e.g., "be funny but not offensive").
-    - [ ] **Safety Test**: Measure if MGRPO preserves safety constraints better than standard RLHF when pushed for performance.
+### Strategic Alignment with Neel Nanda's Priorities
+| Priority | How This Project Addresses It |
+|----------|------------------------------|
+| **"Thinking Models"** | Directly investigates CoT reasoning mechanics |
+| **Pragmatic Interpretability** | Uses tools to solve concrete safety problems |
+| **Model Biology** | Qualitative dissection of specific behaviors |
+| **Gemma Scope 2** | Leverages DeepMind's latest SAEs and Transcoders |
+| **Applied Interpretability** | Demonstrates causal intervention capabilities |
 
-## Phase 5: AI Safety & World Models
-**Goal**: Build systems that "think" before they act and are robust to catastrophic failure.
+---
 
-### 6. World Models & Model-Based RL
-- **Concepts**: Learning a model of the environment ($P(s'|s,a)$) to simulate trajectories.
-- **Relevance**: "Dreaming" potential futures allows an agent to foresee unsafe outcomes without executing them in the real world.
-- **Implementation Tasks**:
-    - [ ] Train a VAE + RNN (or Transformer) to predict next frames in a simple game (like in the "World Models" paper).
-    - [ ] Train a controller purely inside the "dream" (Plan-vs-Policy).
+## Core Hypothesis: The Monitor-Inhibition Model
 
-### 7. Safe RL & Constrained Optimization
-- **Concepts**: Constrained MDPs (CMDPs), Lagrangian methods for safety constraints.
-- **Implementation Tasks**:
-    - [ ] **Safety Gym**: Train an agent that must navigate a maze while avoiding "hazards" (constraints).
-    - [ ] Compare "Reward Shaping" (negative reward for hazards) vs. "Constrained RL" (hard limits).
+We hypothesize that self-correction involves **two distinct functional components**:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     MONITOR-INHIBITION MODEL                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Input: "23 × 41 = 923" (incorrect)                             │
+│                              │                                   │
+│                              ▼                                   │
+│  ┌──────────────────────────────────────────┐                   │
+│  │          MONITOR CIRCUIT                  │                   │
+│  │  (Layers 20-30)                          │                   │
+│  │                                          │                   │
+│  │  • Tracks logical consistency            │                   │
+│  │  • Detects arithmetic errors             │                   │
+│  │  • Fires "inconsistency" features        │                   │
+│  └──────────────────────────────────────────┘                   │
+│                              │                                   │
+│                    Error Signal                                  │
+│                              │                                   │
+│                              ▼                                   │
+│  ┌──────────────────────────────────────────┐                   │
+│  │      INHIBITION/STEERING CIRCUIT          │                   │
+│  │                                          │                   │
+│  │  • Suppresses "default" (wrong) token    │                   │
+│  │  • Boosts correction tokens              │                   │
+│  │  • Outputs: "Wait", "Actually", etc.     │                   │
+│  └──────────────────────────────────────────┘                   │
+│                              │                                   │
+│                              ▼                                   │
+│  Output: "Wait, let me recalculate..."                          │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Testable Predictions
+
+1. **Identifiable Features**: We can find SAE features that consistently activate before correction tokens
+2. **Causal Necessity**: Ablating these features breaks self-correction (model outputs wrong answer confidently)
+3. **Causal Sufficiency**: Artificially activating these features induces false corrections (model doubts correct answers)
+4. **Circuit Structure**: Transcoders reveal causal links between Monitor and Inhibition components
+
+---
+
+## Technical Approach
+
+### Tooling Stack
+
+| Tool | Purpose | Source |
+|------|---------|--------|
+| **Gemma-2-9B-IT** | Target model (instruction-tuned for CoT) | Google DeepMind |
+| **Gemma Scope 2** | Pre-trained SAEs and Transcoders | Google DeepMind |
+| **TransformerLens** | Model hooking and intervention | Neel Nanda |
+| **SAELens** | SAE loading and analysis | MATS ecosystem |
+| **Neuronpedia** | Feature visualization and interpretation | Community |
+
+### Why Gemma Scope 2?
+
+Gemma Scope 2 provides **pre-trained interpretability artifacts** for the entire Gemma 2 family:
+- SAEs for every layer (residual stream, attention, MLP)
+- **Transcoders** for MLP computation decomposition
+- JumpReLU activation for strict sparsity
+- Open-source and well-documented
+
+**Strategic Advantage**: We skip months of SAE training and jump straight to biology.
+
+### Methodology Overview
+
+```
+Phase 1: Setup & Data          Phase 2: Feature Hunting
+┌─────────────────────┐       ┌─────────────────────┐
+│ • Load Gemma-2-9B   │       │ • Run correction    │
+│ • Load Gemma Scope  │  ──►  │   prompts through   │
+│ • Generate self-    │       │   model + SAEs      │
+│   correction dataset│       │ • Attribution       │
+│ • Establish metrics │       │   patching to find  │
+└─────────────────────┘       │   key features      │
+                              └─────────────────────┘
+                                        │
+                                        ▼
+Phase 4: Write-up              Phase 3: Intervention
+┌─────────────────────┐       ┌─────────────────────┐
+│ • Executive summary │       │ • Ablation: Break   │
+│ • Full report with  │  ◄──  │   correction        │
+│   graphs & tables   │       │ • Steering: Induce  │
+│ • Code release      │       │   false corrections │
+│ • Limitations       │       │ • Cross-task tests  │
+└─────────────────────┘       └─────────────────────┘
+```
+
+---
+
+## Success Metrics
+
+### Primary Metric: Correction Logit Difference
+
+```
+Correction_Score = Logit("Wait") - Logit([Incorrect_Token])
+```
+
+This quantifies how strongly the model prefers correction over continuing the error.
+
+### Experiment Success Criteria
+
+| Experiment | Success Criterion |
+|------------|-------------------|
+| Feature Identification | ≥3 features with >0.7 correlation to correction events |
+| Ablation (Suppress) | ≥30% reduction in correction rate |
+| Steering (Induce) | ≥20% increase in false correction rate |
+| Circuit Mapping | Identifiable causal path in Transcoder graph |
+
+### Paper-Ready Outcomes
+
+| Outcome Level | Definition |
+|---------------|------------|
+| **Minimum** | Identify candidate Monitor features; document methodology |
+| **Target** | Demonstrate causal ablation/steering; map partial circuit |
+| **Stretch** | Full circuit diagram; cross-task generalization; safety implications |
+
+---
+
+## Research Questions
+
+### Primary Question
+**What are the internal mechanisms that enable language models to detect and correct their own reasoning errors during Chain-of-Thought?**
+
+### Sub-Questions
+
+1. **Detection Mechanism**
+   - What features activate when the model "notices" an error?
+   - Are these features task-specific (math) or general (reasoning)?
+   - At which layers does error detection occur?
+
+2. **Correction Mechanism**
+   - How does error detection translate to behavioral change?
+   - What suppresses the "default" (wrong) continuation?
+   - What boosts correction tokens ("Wait", "Actually")?
+
+3. **Circuit Architecture**
+   - Is there a clean Monitor → Inhibition pathway?
+   - Does this overlap with refusal/safety circuits?
+   - How distributed is the computation?
+
+4. **Generalization**
+   - Do the same features fire for math vs. logic vs. coding errors?
+   - Does the circuit scale across model sizes (2B → 9B → 27B)?
+
+---
+
+## Dataset Design
+
+### Self-Correction Prompt Categories
+
+| Category | Example | Purpose |
+|----------|---------|---------|
+| **Arithmetic** | "What is 23 × 41? Think step by step." | Clear ground truth |
+| **Logic** | "If A implies B, and B is false, what can we conclude about A?" | Reasoning chains |
+| **Factual** | "What year did the Berlin Wall fall? Let me think..." | Knowledge + reasoning |
+| **Multi-step** | "Solve: 3x + 7 = 22. Show your work." | Extended CoT |
+
+### Data Collection Strategy
+
+1. **Generate 200 candidate prompts** using GPT-4 or Claude
+2. **Run through Gemma-2-9B-IT** with CoT prompting
+3. **Filter for "Goldilocks" cases**:
+   - Model initially makes error
+   - Model writes correction phrase ("Wait", "Actually", "Let me recheck")
+   - Model arrives at correct answer
+4. **Target: 30-50 clean self-correction examples**
+
+### Control Conditions
+
+| Condition | Description |
+|-----------|-------------|
+| **Correct-No-Correction** | Model gets it right first try |
+| **Incorrect-No-Correction** | Model wrong and doesn't correct |
+| **Correction-Clean** | Clear self-correction (target) |
+| **False-Correction** | Model "corrects" right answer to wrong |
+
+---
+
+## Connection to AI Safety
+
+### The Deceptive Alignment Link
+
+The Monitor-Inhibition model maps directly to deception concerns:
+
+| Benign (Our Study) | Malign (Safety Concern) |
+|-------------------|------------------------|
+| Monitor: "Is my math wrong?" | Monitor: "Am I being tested?" |
+| Inhibition: Suppress wrong answer | Inhibition: Suppress true goals |
+| Output: "Wait, let me recalculate" | Output: Appear aligned |
+
+**If we can find the benign monitor, we may detect the malign one.**
+
+### Contribution to MATS Research Agenda
+
+This project contributes to:
+1. **Science of Misalignment**: Understanding how models internally represent "checking"
+2. **Applied Interpretability**: Tools to monitor reasoning quality
+3. **Model Biology**: Cataloging functional circuits in production models
+
+---
+
+## Risks and Mitigations
+
+| Risk | Level | Mitigation |
+|------|-------|------------|
+| **OOM on 9B model** | High | Fall back to Gemma-2-2B; methodology > scale |
+| **Polysemantic features** | High | Focus on feature combinations; acknowledge in write-up |
+| **No clean circuit** | Medium | Report "distributed" finding; pivot to attention analysis |
+| **Insufficient corrections** | Medium | Use few-shot priming to induce correction behavior |
+| **Features don't transfer** | Medium | Report negative result honestly; it's still science |
+
+---
+
+## Expected Contributions
+
+### Scientific Contributions
+1. First mechanistic characterization of self-correction in open-weight models
+2. Novel application of Transcoders to reasoning analysis
+3. Evidence for/against the Monitor-Inhibition hypothesis
+
+### Practical Contributions
+1. Reproducible methodology for reasoning circuit analysis
+2. Feature catalog for correction-related computations
+3. Intervention techniques for steering correction behavior
+
+### Safety Contributions
+1. Framework for detecting internal "checking" mechanisms
+2. Connection between benign and potentially deceptive monitors
+3. Tools for reasoning quality assurance in deployed systems
+
+---
+
+## Repository Structure
+
+```
+Neel_Nanda/
+├── README.md                           # This file
+├── docs/
+│   ├── research_plan.md               # Original strategic analysis
+│   ├── four_week_plan.md              # Detailed execution timeline
+│   ├── topic_evaluation.md            # Topic selection rationale
+│   └── neel_nanda_research_profile.md # Mentor background
+├── resources/
+│   ├── key_references.md              # Papers and links
+│   ├── setup_guide.md                 # Environment configuration
+│   └── gemma_scope_guide.md           # Gemma Scope 2 specifics
+├── experiments/
+│   ├── notebooks/
+│   │   ├── 01_environment_setup.ipynb
+│   │   ├── 02_data_generation.ipynb
+│   │   ├── 03_feature_analysis.ipynb
+│   │   ├── 04_intervention_experiments.ipynb
+│   │   └── 05_circuit_mapping.ipynb
+│   ├── data/
+│   │   ├── correction_prompts.json
+│   │   └── control_prompts.json
+│   ├── results/
+│   │   └── .gitkeep
+│   └── figures/
+│       └── .gitkeep
+└── paper/
+    ├── executive_summary.md
+    ├── main_report.md
+    └── appendix.md
+```
+
+---
+
+## Key References
+
+### Core Methodology
+1. **Gemma Scope 2 Technical Paper** - DeepMind (2025)
+2. **Transcoders enable fine-grained circuit analysis** - LessWrong (2025)
+3. **On the Biology of a Large Language Model** - Anthropic (2025)
+
+### Neel Nanda's Guidance
+4. **MATS Applications + Research Directions** - LessWrong
+5. **How Can Interpretability Researchers Help AGI Go Well?** - Alignment Forum
+6. **A Pragmatic Vision for Interpretability** - LessWrong
+
+### Technical Background
+7. **Gemma Scope: Open Sparse Autoencoders** - arXiv (2024)
+8. **Understanding Refusal in LLMs with SAEs** - EMNLP (2025)
+
+---
+
+## Timeline Overview
+
+| Week | Focus | Key Deliverables |
+|------|-------|------------------|
+| **Week 1** | Setup + Data | Environment ready, 50 correction examples |
+| **Week 2** | Feature Analysis | Top 10 candidate features identified |
+| **Week 3** | Interventions | Ablation/steering results quantified |
+| **Week 4** | Write-up + Polish | Executive summary, full report, code |
+
+**See [docs/four_week_plan.md](docs/four_week_plan.md) for detailed daily breakdown.**
+
+---
+
+## Contact & Resources
+
+- **MATS Program**: [matsprogram.org](https://matsprogram.org)
+- **Neel Nanda Stream**: [matsprogram.org/stream/nanda](https://matsprogram.org/stream/nanda)
+- **Gemma Scope 2**: [Alignment Forum Announcement](https://www.alignmentforum.org/posts/YQro5LyYjDzZrBCdb/announcing-gemma-scope-2)
+- **Neuronpedia**: [neuronpedia.org](https://neuronpedia.org)
+
+---
+
+*Project initialized: January 2026*
+*Target: MATS Summer 2026 Application*
