@@ -395,9 +395,38 @@ The methodology transfers to other user modeling behaviors:
 
 ## Project Status
 
-**Status**: Research idea documented
-**Next Steps**: Dataset construction with implicit gender cues
+**Status**: Environment setup complete - Ready for experiments
+
+### Completed
+- [x] Research plan documented
+- [x] Model Diffing environment setup (Gemma 2 2B)
+- [x] User Persona Dataset created (18 prompt pairs)
+- [x] Core analysis modules implemented
+- [x] Day 1 Jupyter notebook ready
+
+### Next Steps
+- [ ] Run Day 1 experiments to find User Model features
+- [ ] Verify candidate features with additional prompts
+- [ ] Run sycophancy trigger analysis
+- [ ] Causal intervention experiments
+
+### Quick Start
+
+```bash
+# Navigate to experiments
+cd experiments/
+
+# Option 1: Google Colab (recommended)
+# Upload notebooks/01_model_diffing_setup.ipynb to Colab
+
+# Option 2: Local
+pip install -r requirements.txt
+jupyter lab notebooks/
+```
+
+See [experiments/README.md](experiments/README.md) for detailed setup instructions.
 
 ---
 
 *Project initialized: January 2026*
+*Experiments setup: January 2026*
