@@ -40,10 +40,93 @@ Investigating how RLHF-trained models build internal user representations and ho
 ![Week](https://img.shields.io/badge/Timeline-4%20Weeks-blue)
 ![Track](https://img.shields.io/badge/Track-Simple%20→%20Advanced-orange)
 ![Tools](https://img.shields.io/badge/Tools-Gemma%20Scope%20Cross--Coders-purple)
+![Progress](https://img.shields.io/badge/Progress-Phase%201%20Complete-green)
 
 **Core Question**: How does RLHF create user modeling circuits that drive sycophancy?
 
 **Hypothesis**: Chat models build internal "User Model" features (e.g., "User is novice") that causally influence response tone, leading to sycophantic behavior.
+
+---
+
+### Research Methodology
+
+Following Neel Nanda's framework, research projects progress through three stages:
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   EXPLORATION   │ →   │   REFINEMENT    │ →   │ COMMUNICATION   │
+│                 │     │                 │     │                 │
+│ "What is going  │     │ "Is my hypo-    │     │ "Write it up,   │
+│  on here?"      │     │  thesis true?"  │     │  sanity check"  │
+│                 │     │                 │     │                 │
+│ North star:     │     │ North star:     │     │ North star:     │
+│ GAIN SURFACE    │     │ RIGOROUS        │     │ CLEAR           │
+│ AREA            │     │ EVIDENCE        │     │ PRESENTATION    │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+       ▲
+       │
+   WE ARE HERE
+```
+
+**Current Stage: EXPLORATION**
+
+In exploration, the key question is: *"What gains me surface area on this problem?"*
+
+**Surface area** = connections, information, weird phenomena, random scraps of insight you get when you actually stare at things in a model and notice what's weird in reality.
+
+**Our exploration approach:**
+1. **Look at actual data** - Ran models on real text, examined per-token divergences
+2. **Notice weird things** - Found that models diverge most on names, code, rare tokens
+3. **Build foundational tools** - Created reusable functions for activation caching, probing, logit lens
+4. **Don't force a plan** - Let curiosity drive investigation; doing whatever gains surface area
+5. **Qualitative examples first** - Examined specific high-KL tokens before aggregate statistics
+
+> *"If you don't have a more coherent plan, just do whatever feels like it would get you surface area. You should not feel bad about not having a plan."* - Neel Nanda
+
+---
+
+### Current Progress
+
+#### Completed: Phase 1 - Foundation & Exploration
+
+**Notebook 1: KL Divergence Exploration** (`01_exploration.ipynb`)
+- Computed per-token KL divergence between Pythia-410M and Pythia-1.4B models
+- Processed 34,965 tokens across 100 documents from the Pile dataset
+- Identified high-divergence positions where models disagree most
+- Created visualizations: distributions, position trends, per-document analysis
+- Key finding: Models diverge most on rare names, code syntax, and domain-specific terms
+
+**Notebook 2: White-Box Interpretability Deep Dive** (`02_whitebox_interpretability.ipynb`)
+- Comprehensive tutorial on interpretability techniques for alignment research
+- **Activation Caching**: Capturing internal model states with TransformerLens
+- **Residual Stream Analysis**: Tracking information flow through layers
+- **Logit Lens**: Peeking at intermediate layer predictions (detecting when models "change their mind")
+- **Linear Probing**: Finding interpretable directions (sentiment, truthfulness)
+- **Truth Probes**: Detecting when a model "knows" something is true/false
+- **Base vs Instruct Comparison**: Framework for detecting RLHF-induced changes
+- **SAE Introduction**: Sparse Autoencoders for finding interpretable features
+
+#### In Progress: Phase 2 - Sycophancy-Specific Analysis
+
+- [ ] Create sycophancy evaluation dataset
+- [ ] Compare base vs instruct model activations on sycophantic prompts
+- [ ] Train probes for "user agreement" vs "truthfulness"
+- [ ] Load Gemma Scope SAEs and find sycophancy-related features
+- [ ] Activation patching to identify causal circuits
+
+---
+
+### Key Techniques Implemented
+
+| Technique | Purpose | Alignment Application |
+|-----------|---------|----------------------|
+| KL Divergence | Compare model distributions | Find where models differ |
+| Activation Caching | Save internal states | Foundation for all analysis |
+| Logit Lens | Intermediate predictions | Detect deceptive computation |
+| Linear Probing | Find concept directions | Truth/sycophancy detection |
+| SAEs | Interpretable features | Decompose representations |
+
+---
 
 **Approach**:
 1. **Simple Track** (Weeks 1-2): SAEs on Chat model to find user-model features
@@ -69,9 +152,17 @@ research-idea-6/
 │   └── executive_summary_template.md
 └── experiments/
     ├── notebooks/
+    │   ├── 01_exploration.ipynb           # KL divergence analysis
+    │   └── 02_whitebox_interpretability.ipynb  # Interpretability techniques
     ├── data/
     ├── results/
+    │   ├── kl_divergence_results.parquet  # Raw KL data
+    │   └── kl_divergence_results.csv
     └── figures/
+        ├── kl_divergence_distribution.png
+        ├── kl_by_position.png
+        ├── kl_divergence_analysis.png
+        └── kl_per_document.png
 ```
 
 ---
