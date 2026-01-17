@@ -35,15 +35,19 @@ jupyter lab notebooks/
 experiments/
 ├── README.md                 # This file
 ├── requirements.txt          # Python dependencies
+├── docs/
+│   └── observable_signal_experiment.md  # Output-only detection experiment
 ├── notebooks/
 │   └── 01_model_diffing_setup.ipynb  # Day 1 notebook
 ├── data/
 │   └── user_persona_prompts.json     # Prompt dataset
+│   └── observable_signal_minimal_pairs.json  # Minimal-pair prompts
 ├── src/
 │   ├── __init__.py           # Package init
 │   ├── model_diffing.py      # Core stereo model runner
 │   ├── cross_coder.py        # Cross-Coder wrapper
 │   ├── analysis.py           # Latent analysis utilities
+│   ├── observable_signals.py # Output-only scoring utilities
 │   └── visualization.py      # Plotting and dashboards
 ├── results/                  # Output directory (created on run)
 └── figures/                  # Saved figures (created on run)
