@@ -270,6 +270,138 @@ class StereoModelRunner:
 
         return base_cache, chat_cache
 
+    @staticmethod
+    def _strip_prompt(prompt: str, full_output: str) -> str:
+        """Remove the prompt prefix from a decoded string if it is present."""
+        if full_output.startswith(prompt):
+            return full_output[len(prompt):].strip()
+        return full_output.strip()
+
+    def _generate_with_transformers(
+        self,
+        model,
+        prompt: str,
+        max_new_tokens: int,
+        temperature: float,
+        top_p: Optional[float],
+        do_sample: bool,
+        stop_at_eos: bool,
+    ) -> str:
+        if self.tokenizer is None:
+            raise RuntimeError("Tokenizer not initialized.")
+
+        generation_inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
+        pad_token_id = self.tokenizer.pad_token_id
+        if pad_token_id is None:
+            pad_token_id = self.tokenizer.eos_token_id
+
+        gen_kwargs = {
+            "max_new_tokens": max_new_tokens,
+            "temperature": temperature if do_sample else 1.0,
+            "do_sample": do_sample,
+            "pad_token_id": pad_token_id,
+            "eos_token_id": self.tokenizer.eos_token_id if stop_at_eos else None,
+        }
+        if do_sample and top_p is not None:
+            gen_kwargs["top_p"] = top_p
+
+        with torch.no_grad():
+            output_ids = model.generate(**generation_inputs, **gen_kwargs)
+
+        prompt_length = generation_inputs["input_ids"].shape[1]
+        completion_ids = output_ids[:, prompt_length:]
+        if completion_ids.shape[1] == 0:
+            return ""
+        completion_text = self.tokenizer.decode(completion_ids[0], skip_special_tokens=True)
+        return completion_text.strip()
+
+    def _generate_with_transformer_lens(
+        self,
+        model,
+        prompt: str,
+        max_new_tokens: int,
+        temperature: float,
+        top_p: Optional[float],
+        do_sample: bool,
+        stop_at_eos: bool,
+    ) -> str:
+        gen_kwargs = {
+            "max_new_tokens": max_new_tokens,
+            "temperature": temperature if do_sample else 1.0,
+            "stop_at_eos": stop_at_eos,
+        }
+
+        # HookedTransformer.generate returns the full string including the prompt.
+        generated = model.generate(prompt, **gen_kwargs)
+        return self._strip_prompt(prompt, generated)
+
+    def generate_completions(
+        self,
+        prompt: str,
+        max_new_tokens: int = 64,
+        temperature: float = 0.7,
+        top_p: Optional[float] = 0.95,
+        do_sample: bool = False,
+        stop_at_eos: bool = True,
+    ) -> Tuple[str, str]:
+        """
+        Generate text completions from both Base and Chat models for the same prompt.
+
+        Args:
+            prompt: Prompt text to complete.
+            max_new_tokens: Maximum number of new tokens to generate.
+            temperature: Sampling temperature (only used when do_sample=True).
+            top_p: Top-p sampling parameter (only used when do_sample=True).
+            do_sample: Whether to sample (True) or use greedy decoding (False).
+            stop_at_eos: Whether to stop generation at the EOS token.
+
+        Returns:
+            Tuple of (base_completion, chat_completion) strings.
+        """
+        if not self._is_loaded:
+            raise RuntimeError("Models not loaded. Call load_models() first.")
+
+        if self.use_transformer_lens:
+            base_text = self._generate_with_transformer_lens(
+                self.base_model,
+                prompt,
+                max_new_tokens,
+                temperature,
+                top_p,
+                do_sample,
+                stop_at_eos,
+            )
+            chat_text = self._generate_with_transformer_lens(
+                self.chat_model,
+                prompt,
+                max_new_tokens,
+                temperature,
+                top_p,
+                do_sample,
+                stop_at_eos,
+            )
+            return base_text, chat_text
+
+        base_text = self._generate_with_transformers(
+            self.base_model,
+            prompt,
+            max_new_tokens,
+            temperature,
+            top_p,
+            do_sample,
+            stop_at_eos,
+        )
+        chat_text = self._generate_with_transformers(
+            self.chat_model,
+            prompt,
+            max_new_tokens,
+            temperature,
+            top_p,
+            do_sample,
+            stop_at_eos,
+        )
+        return base_text, chat_text
+
 
 class ModelDiffingPipeline:
     """

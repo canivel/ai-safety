@@ -40,7 +40,7 @@ Investigating how RLHF-trained models build internal user representations and ho
 ![Week](https://img.shields.io/badge/Timeline-4%20Weeks-blue)
 ![Track](https://img.shields.io/badge/Track-Simple%20→%20Advanced-orange)
 ![Tools](https://img.shields.io/badge/Tools-Gemma%20Scope%20Cross--Coders-purple)
-![Progress](https://img.shields.io/badge/Progress-Phase%201%20Complete-green)
+![Progress](https://img.shields.io/badge/Progress-Phase%202%20Complete-green)
 
 **Core Question**: How does RLHF create user modeling circuits that drive sycophancy?
 
@@ -106,12 +106,32 @@ In exploration, the key question is: *"What gains me surface area on this proble
 - **Base vs Instruct Comparison**: Framework for detecting RLHF-induced changes
 - **SAE Introduction**: Sparse Autoencoders for finding interpretable features
 
-#### In Progress: Phase 2 - Sycophancy-Specific Analysis
+**Notebook 3: Chain-of-Thought User Modeling Analysis** (`03_cot_user_modeling_analysis.ipynb`)
+- Complete pipeline for detecting and removing user modeling in CoT reasoning
+- **Dataset Creation**: 8 test cases across 4 manipulation types (belief, expertise, emotion, authority)
+- **CoT Generation**: Functions for step-by-step reasoning with customizable parameters
+- **Segmentation**: Parsing CoT into logical segments with user modeling keyword detection
+- **Activation Analysis**: Layer-by-layer comparison of User A vs User B vs Neutral conditions
+- **Linear Probe**: Trained classifier to detect user modeling direction in activation space
+- **Intervention Experiments**: Removing user modeling direction and measuring output similarity
+- **Key Question Answered**: Can we make different users receive identical factual answers by ablating user modeling?
 
-- [ ] Create sycophancy evaluation dataset
-- [ ] Compare base vs instruct model activations on sycophantic prompts
-- [ ] Train probes for "user agreement" vs "truthfulness"
+**Notebook 4: Gender-Based User Modeling Detection** (`user_modeling_gender_detection_qwen05.ipynb`)
+- Three-layer interpretability investigation: does Qwen2.5-0.5B-Instruct infer and act on user gender from names?
+- **Dataset**: 25 minimal-pair prompts (identical questions, only male vs female name differs) across stereotype-prone domains (career, hobbies, exercise, salary negotiation)
+- **Part A — Probing Classifiers**: Linear probes achieve **100% accuracy** at Layers 2, 3, 20, and 21 (5-fold CV), confirming the model strongly encodes gender in its hidden states
+- **Part B — CoT Monitoring**: Zero gendered pronouns and zero explicit gender reasoning detected across all 8 CoT-prompted pairs — the model never *overtly* reasons about gender
+- **Part C — Output Divergence**: Average Jaccard similarity of **0.464** across 25 pairs, with extremes ranging from 0.08 (vacation planning) to 1.00 (book recommendation) — the model gives substantially different advice based on the name alone
+- **Key Finding**: The model **knows** gender (probing), **doesn't think about** it (CoT is clean), but **acts on** it (outputs diverge). This is **implicit user modeling** — the most concerning pattern for safety because it is invisible to chain-of-thought monitoring
+- **Most divergent domains**: vacation planning (0.08), musical instruments (0.20), college major choice (0.22)
+- Connects probing classifiers, CoT monitorability (Korbak et al.), and Model Organisms of Misalignment (Anthropic) into a single detection methodology
+
+#### In Progress: Phase 3 - Scaling & Validation
+
+- [ ] Run notebook 03 experiments on larger dataset (100+ test cases)
+- [ ] Apply techniques to chat/instruct models (Llama-chat, Mistral-instruct)
 - [ ] Load Gemma Scope SAEs and find sycophancy-related features
+- [ ] Cross-model validation of user modeling direction
 - [ ] Activation patching to identify causal circuits
 
 ---
@@ -125,6 +145,9 @@ In exploration, the key question is: *"What gains me surface area on this proble
 | Logit Lens | Intermediate predictions | Detect deceptive computation |
 | Linear Probing | Find concept directions | Truth/sycophancy detection |
 | SAEs | Interpretable features | Decompose representations |
+| CoT Segmentation | Parse reasoning steps | Locate user modeling in reasoning |
+| Direction Ablation | Remove specific features | Eliminate user modeling without breaking model |
+| Minimal-Pair Probing | Detect implicit demographic modeling | Identify hidden user modeling invisible to CoT |
 
 ---
 
@@ -152,17 +175,25 @@ research-idea-6/
 │   └── executive_summary_template.md
 └── experiments/
     ├── notebooks/
-    │   ├── 01_exploration.ipynb           # KL divergence analysis
-    │   └── 02_whitebox_interpretability.ipynb  # Interpretability techniques
+    │   ├── 01_exploration.ipynb                              # KL divergence analysis
+    │   ├── 02_whitebox_interpretability.ipynb                # Interpretability techniques
+    │   ├── 03_cot_user_modeling_analysis.ipynb               # CoT user modeling experiments
+    │   └── user_modeling_gender_detection_qwen05.ipynb       # Gender-based user modeling detection
     ├── data/
+    │   └── user_modeling_dataset.json           # Test cases for user modeling
     ├── results/
-    │   ├── kl_divergence_results.parquet  # Raw KL data
-    │   └── kl_divergence_results.csv
+    │   ├── kl_divergence_results.parquet        # Raw KL data
+    │   ├── kl_divergence_results.csv
+    │   ├── user_modeling_direction.pt           # Learned direction vector
+    │   ├── user_modeling_probe.pt               # Trained classifier
+    │   └── activation_comparison.csv            # Layer-wise analysis
     └── figures/
         ├── kl_divergence_distribution.png
         ├── kl_by_position.png
         ├── kl_divergence_analysis.png
-        └── kl_per_document.png
+        ├── kl_per_document.png
+        ├── user_modeling_by_layer.png           # Layer activation comparison
+        └── probe_training.png                   # Probe training curves
 ```
 
 ---

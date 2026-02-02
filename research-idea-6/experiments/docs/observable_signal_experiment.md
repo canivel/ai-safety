@@ -55,6 +55,31 @@ For each prompt set, compute:
    - Within-model stability vs. user-signal shifts
    - Base vs. Chat sensitivity to user signaling
 
+## Running the Experiment
+
+Use the scripted runner at `scripts/run_observable_signal_experiment.py` to automate the full pipeline (prompt loading → stereo inference → scoring → summaries):
+
+```bash
+cd experiments
+python scripts/run_observable_signal_experiment.py \
+  --hf-token YOUR_HF_TOKEN \
+  --device cuda \
+  --backend transformers \
+  --max-new-tokens 64
+```
+
+Key flags:
+- `--backend` chooses between HuggingFace `transformers` (default) and `transformer_lens`.
+- `--do-sample` enables sampling-based generation (transformers backend only).
+- `--dataset` / `--output-dir` allow custom prompt lists and output locations.
+
+Outputs:
+- `results/observable_signals_responses.json`: Raw Base + Chat completions per variant.
+- `results/observable_signals_scores.json`: Heuristic metrics for every prompt/model.
+- `results/observable_signals_summary.csv`: Domain-level aggregates (instability, agreement gradients, etc.).
+
+The script internally calls `StereoModelRunner.generate_completions`, so the same models used for activation diffing now power the observable-signal benchmark.
+
 ## Expected Outputs
 - `results/observable_signals_scores.json`: Per-prompt metric scores
 - `results/observable_signals_summary.csv`: Aggregate summary by model and domain
