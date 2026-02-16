@@ -1,0 +1,4 @@
+model_short,model_id,num_layers,hidden_size,timestamp,probing_best_accuracy,probing_best_layer,cot_pronoun_alignment,cot_gender_reasoning_rate,output_avg_similarity,output_divergence,vram_gb,load_time_s
+gemma-3-1b-it,google/gemma-3-1b-it,26,1152,2026-02-16T17:22:19.498949,1.0,Layer 6,0.0,0.0,0.5264414175772767,0.4735585824227233,1.999801344,5.570786
+gemma-3-4b-it,google/gemma-3-4b-it,34,2560,2026-02-16T18:01:32.646688,1.0,Embedding,0.0,0.0,0.543827619535469,0.456172380464531,8.600260096,14.186387
+gemma-3-12b-it,google/gemma-3-12b-it,48,3840,2026-02-16T18:24:00.646769,1.0,Embedding,0.0,0.0,0.49711875644783715,0.5028812435521628,24.384221184,97.698222

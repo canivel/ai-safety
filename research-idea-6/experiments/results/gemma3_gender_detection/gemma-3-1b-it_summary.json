@@ -1,0 +1,15 @@
+{
+  "model_id": "google/gemma-3-1b-it",
+  "model_short": "gemma-3-1b-it",
+  "num_layers": 26,
+  "hidden_size": 1152,
+  "timestamp": "2026-02-16T17:22:19.498949",
+  "probing_best_accuracy": 1.0,
+  "probing_best_layer": "Layer 6",
+  "cot_pronoun_alignment": 0.0,
+  "cot_gender_reasoning_rate": 0.0,
+  "output_avg_similarity": 0.5264414175772767,
+  "output_divergence": 0.4735585824227233,
+  "vram_gb": 1.999801344,
+  "load_time_s": 5.570786
+}
