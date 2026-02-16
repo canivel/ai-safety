@@ -69,6 +69,8 @@ This motivates a shift toward **agentic safety** — a domain where the risks ar
 
 Additionally, we built an observable-signal framework testing user modeling beyond gender — measuring conclusion stability, agreement gradients, confidence-evidence mismatch, and counterfactual resistance across Base vs Chat models. The Chat model showed higher instability (0.250 vs 0.208) and higher counterfactual resistance (0.80 vs 0.60), consistent with RLHF amplifying user-signal sensitivity.
 
+**Full write-up**: [Your AI Is Profiling You — And Its Chain of Thought Won't Tell You](https://canivel.substack.com/p/your-ai-is-profiling-you-and-its?r=j986h)
+
 ---
 
 ## Active: Research Idea 7 — Agentic Safety: Parallel Agent Coordination
