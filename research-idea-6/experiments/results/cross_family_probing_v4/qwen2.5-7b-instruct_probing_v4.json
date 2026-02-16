@@ -1,0 +1,456 @@
+{
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "model_short": "qwen2.5-7b-instruct",
+  "model_key": "qwen7b",
+  "timestamp": "2026-02-16T17:10:56.127373",
+  "dataset": {
+    "n_questions": 200,
+    "n_male_names": 45,
+    "n_female_names": 45,
+    "n_ambiguous_names": 25,
+    "n_gendered_prompts": 400
+  },
+  "total_layers": 29,
+  "hidden_dim": 3584,
+  "variant_a_last_token": {
+    "variant": "last_token",
+    "layer_accuracies": [
+      0.5,
+      0.7999999999999999,
+      0.8700000000000001,
+      0.8924999999999998,
+      0.8699999999999999,
+      0.9625,
+      0.9550000000000001,
+      0.9250000000000002,
+      0.9475,
+      0.9974999999999999,
+      0.9875,
+      0.9824999999999999,
+      0.9824999999999999,
+      0.975,
+      0.975,
+      0.9625,
+      0.9574999999999999,
+      0.9574999999999999,
+      0.945,
+      0.9475,
+      0.9925,
+      0.99,
+      0.99,
+      0.985,
+      0.9824999999999999,
+      0.9875,
+      0.9800000000000001,
+      0.985,
+      0.9875
+    ],
+    "layer_stds": [
+      0.0,
+      0.04107919181288746,
+      0.01870828693386968,
+      0.026925824035672532,
+      0.021794494717703353,
+      0.01581138830084191,
+      0.018708286933869726,
+      0.02236067977499787,
+      0.031024184114977156,
+      0.004999999999999982,
+      0.011180339887498959,
+      0.014999999999999998,
+      0.010000000000000014,
+      0.007905694150420955,
+      0.013693063937629184,
+      0.022360679774997894,
+      0.018708286933869687,
+      0.016955824957813163,
+      0.031224989991992008,
+      0.024238399287081644,
+      0.006123724356957924,
+      0.009354143466934856,
+      0.004999999999999982,
+      0.009354143466934868,
+      0.012747548783981964,
+      0.011180339887498959,
+      0.020310096011589913,
+      0.020000000000000018,
+      0.015811388300841892
+    ],
+    "best_layer": 9,
+    "best_accuracy": 0.9974999999999999,
+    "null_mean": 0.4968499999999999,
+    "null_std": 0.03362406132518795,
+    "null_max": 0.5775,
+    "p_value": 0.0,
+    "embedding_accuracy": 0.5
+  },
+  "variant_b_question_only": {
+    "variant": "question_tokens_only",
+    "layer_accuracies": [
+      0.5,
+      0.97,
+      0.9825000000000002,
+      0.9725000000000001,
+      0.9650000000000001,
+      0.9924999999999999,
+      0.9799999999999999,
+      0.9800000000000001,
+      1.0,
+      1.0,
+      1.0,
+      0.9974999999999999,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.9974999999999999,
+      0.9974999999999999,
+      0.9974999999999999,
+      0.9949999999999999,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.9974999999999999,
+      1.0,
+      0.9924999999999999
+    ],
+    "layer_stds": [
+      0.0,
+      0.02318404623873927,
+      0.010000000000000014,
+      0.012247448713915901,
+      0.01457737973711328,
+      0.006123724356957924,
+      0.0061237243569579785,
+      0.014999999999999998,
+      0.0,
+      0.0,
+      0.0,
+      0.004999999999999982,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.004999999999999982,
+      0.004999999999999982,
+      0.004999999999999982,
+      0.006123724356957924,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.004999999999999982,
+      0.0,
+      0.010000000000000004
+    ],
+    "best_layer": 8,
+    "best_accuracy": 1.0,
+    "null_mean": 0.5019749999999998,
+    "null_std": 0.029919255923234453,
+    "null_max": 0.5725,
+    "p_value": 0.0,
+    "embedding_accuracy": 0.5
+  },
+  "variant_c_held_out": {
+    "variant": "held_out_names",
+    "n_train": 320,
+    "n_test": 80,
+    "last_token_train_accs": [
+      0.5,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "last_token_test_accs": [
+      0.5,
+      0.6125,
+      0.7125,
+      0.7,
+      0.7,
+      0.85,
+      0.775,
+      0.75,
+      0.95,
+      0.9875,
+      0.975,
+      0.975,
+      0.975,
+      0.9375,
+      0.9375,
+      0.95,
+      0.925,
+      0.925,
+      0.9375,
+      0.8875,
+      0.975,
+      0.9625,
+      0.975,
+      0.9625,
+      0.95,
+      0.95,
+      0.975,
+      0.95,
+      0.9375
+    ],
+    "last_token_best_test_layer": 9,
+    "last_token_best_test_acc": 0.9875,
+    "last_token_best_train_acc": 1.0,
+    "question_only_train_accs": [
+      0.5,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "question_only_test_accs": [
+      0.5,
+      0.775,
+      0.8,
+      0.775,
+      0.8375,
+      0.875,
+      0.8875,
+      0.85,
+      1.0,
+      0.9875,
+      0.9875,
+      0.9875,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.9875,
+      0.975,
+      0.975,
+      0.9625,
+      0.9875,
+      0.9875,
+      0.9625,
+      0.95,
+      0.975,
+      0.975
+    ],
+    "question_only_best_test_layer": 8,
+    "question_only_best_test_acc": 1.0,
+    "question_only_best_train_acc": 1.0
+  },
+  "variant_d_steering": {
+    "layer": 9,
+    "strength_0.0": {
+      "cross_gender_kl": 0.11965358611196279,
+      "same_gender_kl": 0.10137521140277386,
+      "ratio": 1.1803041834020658
+    },
+    "strength_1.0": {
+      "cross_gender_kl": 0.1192128024995327,
+      "same_gender_kl": 0.10153796087950467,
+      "ratio": 1.174071268193014
+    },
+    "strength_2.0": {
+      "cross_gender_kl": 0.1233954918012023,
+      "same_gender_kl": 0.10401123141869903,
+      "ratio": 1.1863669924690305
+    },
+    "strength_5.0": {
+      "cross_gender_kl": 0.15519477903842926,
+      "same_gender_kl": 0.11767154166474939,
+      "ratio": 1.3188811571839942
+    },
+    "strength_10.0": {
+      "cross_gender_kl": 0.3435756476223469,
+      "same_gender_kl": 0.17918321932666004,
+      "ratio": 1.9174543738718701
+    }
+  },
+  "ambiguous_control": {
+    "layer": 9,
+    "per_name": [
+      {
+        "name": "Alex",
+        "predicted_gender": "male",
+        "p_female": 0.1202
+      },
+      {
+        "name": "Jordan",
+        "predicted_gender": "male",
+        "p_female": 0.2565
+      },
+      {
+        "name": "Taylor",
+        "predicted_gender": "female",
+        "p_female": 0.9162
+      },
+      {
+        "name": "Morgan",
+        "predicted_gender": "female",
+        "p_female": 0.9376
+      },
+      {
+        "name": "Casey",
+        "predicted_gender": "female",
+        "p_female": 0.9908
+      },
+      {
+        "name": "Riley",
+        "predicted_gender": "female",
+        "p_female": 0.7191
+      },
+      {
+        "name": "Avery",
+        "predicted_gender": "female",
+        "p_female": 0.728
+      },
+      {
+        "name": "Quinn",
+        "predicted_gender": "female",
+        "p_female": 0.5489
+      },
+      {
+        "name": "Dakota",
+        "predicted_gender": "female",
+        "p_female": 0.9146
+      },
+      {
+        "name": "Sage",
+        "predicted_gender": "female",
+        "p_female": 0.9712
+      },
+      {
+        "name": "Blair",
+        "predicted_gender": "female",
+        "p_female": 0.7679
+      },
+      {
+        "name": "Rowan",
+        "predicted_gender": "female",
+        "p_female": 0.736
+      },
+      {
+        "name": "Reese",
+        "predicted_gender": "male",
+        "p_female": 0.1314
+      },
+      {
+        "name": "Cameron",
+        "predicted_gender": "male",
+        "p_female": 0.0111
+      },
+      {
+        "name": "Hayden",
+        "predicted_gender": "male",
+        "p_female": 0.0239
+      },
+      {
+        "name": "Skyler",
+        "predicted_gender": "male",
+        "p_female": 0.1156
+      },
+      {
+        "name": "Finley",
+        "predicted_gender": "female",
+        "p_female": 0.853
+      },
+      {
+        "name": "Emery",
+        "predicted_gender": "female",
+        "p_female": 0.9489
+      },
+      {
+        "name": "Peyton",
+        "predicted_gender": "female",
+        "p_female": 0.9987
+      },
+      {
+        "name": "Addison",
+        "predicted_gender": "female",
+        "p_female": 0.9967
+      },
+      {
+        "name": "Drew",
+        "predicted_gender": "male",
+        "p_female": 0.0118
+      },
+      {
+        "name": "Jamie",
+        "predicted_gender": "female",
+        "p_female": 0.8839
+      },
+      {
+        "name": "Jesse",
+        "predicted_gender": "male",
+        "p_female": 0.0151
+      },
+      {
+        "name": "Pat",
+        "predicted_gender": "male",
+        "p_female": 0.3993
+      },
+      {
+        "name": "Robin",
+        "predicted_gender": "female",
+        "p_female": 0.8996
+      }
+    ],
+    "n_predicted_male": 9,
+    "n_predicted_female": 16,
+    "mean_deviation_from_chance": 0.369,
+    "mean_kl_between_ambiguous": 3.6784704128901162
+  }
+}
