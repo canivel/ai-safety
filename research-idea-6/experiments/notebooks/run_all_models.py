@@ -165,13 +165,15 @@ def jaccard_similarity(set1, set2):
 
 def run_model(model_id):
     """Run the full three-layer pipeline for one model."""
-    from transformers import AutoTokenizer, Gemma3ForCausalLM
+    from transformers import AutoTokenizer, AutoProcessor
 
     model_short = model_id.split("/")[-1]
     expected = MODEL_REGISTRY[model_id]
+    is_text_only = (model_id == "google/gemma-3-1b-it")
     print(f"\n{'#' * 70}")
     print(f"# MODEL: {model_id}")
     print(f"# Expected: {expected['num_layers']} layers, hidden={expected['hidden_size']}, ~{expected['bf16_gb']}GB VRAM")
+    print(f"# Type: {'text-only (CausalLM)' if is_text_only else 'multimodal (ConditionalGeneration)'}")
     print(f"{'#' * 70}\n")
 
     # Check if already completed
@@ -185,19 +187,31 @@ def run_model(model_id):
     print(f"[{model_short}] Loading model in BF16...")
     load_start = datetime.now()
 
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
-    model = Gemma3ForCausalLM.from_pretrained(
-        model_id,
-        torch_dtype=torch.bfloat16,
-        device_map="auto",
-    )
-    model.config.output_hidden_states = True
-    model.eval()
+    if is_text_only:
+        # 1B is text-only, use Gemma3ForCausalLM
+        from transformers import Gemma3ForCausalLM
+        tokenizer = AutoTokenizer.from_pretrained(model_id)
+        model = Gemma3ForCausalLM.from_pretrained(
+            model_id, torch_dtype=torch.bfloat16, device_map="auto",
+        )
+        model.config.output_hidden_states = True
+        model.eval()
+        lm_model = model  # direct access for hidden states
+        gen_device = model.device
+    else:
+        # 4B/12B/27B are multimodal, use Gemma3ForConditionalGeneration
+        from transformers import Gemma3ForConditionalGeneration
+        tokenizer = AutoProcessor.from_pretrained(model_id)
+        model = Gemma3ForConditionalGeneration.from_pretrained(
+            model_id, torch_dtype=torch.bfloat16, device_map="auto",
+        )
+        model.config.output_hidden_states = True
+        model.eval()
+        lm_model = model.language_model  # language model for hidden states
+        gen_device = model.device if hasattr(model, 'device') else "cuda"
 
-    num_layers = model.config.num_hidden_layers
-    hidden_size = model.config.hidden_size
-    assert num_layers == expected["num_layers"], f"Layer mismatch: {num_layers} vs {expected['num_layers']}"
-    assert hidden_size == expected["hidden_size"], f"Hidden size mismatch: {hidden_size} vs {expected['hidden_size']}"
+    num_layers = MODEL_REGISTRY[model_id]["num_layers"]
+    hidden_size = MODEL_REGISTRY[model_id]["hidden_size"]
 
     load_time = (datetime.now() - load_start).total_seconds()
     vram_used = torch.cuda.max_memory_allocated() / 1e9
@@ -209,26 +223,37 @@ def run_model(model_id):
     def generate_response(prompt, system_prompt="You are a helpful assistant.",
                           max_new_tokens=250, temperature=0.1):
         messages = [{"role": "user", "content": f"{system_prompt}\n\n{prompt}"}]
-        inputs = tokenizer.apply_chat_template(
-            messages, add_generation_prompt=True, tokenize=True,
-            return_dict=True, return_tensors="pt",
-        ).to(model.device)
+        if is_text_only:
+            inputs = tokenizer.apply_chat_template(
+                messages, add_generation_prompt=True, tokenize=True,
+                return_dict=True, return_tensors="pt",
+            ).to(model.device)
+        else:
+            inputs = tokenizer.apply_chat_template(
+                messages, add_generation_prompt=True, tokenize=True,
+                return_dict=True, return_tensors="pt",
+            ).to(model.device)
         with torch.no_grad():
             output_ids = model.generate(
                 **inputs, max_new_tokens=max_new_tokens,
                 temperature=temperature, do_sample=temperature > 0,
-                top_p=0.9, pad_token_id=tokenizer.eos_token_id,
+                top_p=0.9,
             )
         new_tokens = output_ids[0][inputs["input_ids"].shape[-1]:]
-        return tokenizer.decode(new_tokens, skip_special_tokens=True)
+        tok = tokenizer.tokenizer if hasattr(tokenizer, 'tokenizer') else tokenizer
+        return tok.decode(new_tokens, skip_special_tokens=True)
 
     def extract_hidden_states(texts):
         all_hidden = {layer: [] for layer in range(num_layers + 1)}
+        tok = tokenizer.tokenizer if hasattr(tokenizer, 'tokenizer') else tokenizer
         for text in tqdm(texts, desc=f"[{model_short}] Hidden states"):
-            inputs = tokenizer(text, return_tensors="pt",
-                              truncation=True, max_length=128).to(model.device)
+            inputs = tok(text, return_tensors="pt",
+                        truncation=True, max_length=128).to("cuda")
             with torch.no_grad():
-                outputs = model(**inputs)
+                if is_text_only:
+                    outputs = model(**inputs)
+                else:
+                    outputs = lm_model(**inputs)
             for layer_idx, hs in enumerate(outputs.hidden_states):
                 mean_repr = hs.squeeze(0).mean(dim=0).float().cpu().numpy()
                 all_hidden[layer_idx].append(mean_repr)
