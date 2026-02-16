@@ -194,7 +194,6 @@ def run_model(model_id):
         model = Gemma3ForCausalLM.from_pretrained(
             model_id, torch_dtype=torch.bfloat16, device_map="auto",
         )
-        model.config.output_hidden_states = True
         model.eval()
     else:
         # 4B/12B/27B are multimodal, use Gemma3ForConditionalGeneration
@@ -204,7 +203,6 @@ def run_model(model_id):
         model = Gemma3ForConditionalGeneration.from_pretrained(
             model_id, torch_dtype=torch.bfloat16, device_map="auto",
         )
-        model.config.output_hidden_states = True
         model.eval()
 
     num_layers = MODEL_REGISTRY[model_id]["num_layers"]
@@ -252,7 +250,7 @@ def run_model(model_id):
             inputs = tok(text, return_tensors="pt",
                         truncation=True, max_length=128).to("cuda")
             with torch.no_grad():
-                outputs = model(**inputs)
+                outputs = model(**inputs, output_hidden_states=True)
             for layer_idx, hs in enumerate(outputs.hidden_states):
                 mean_repr = hs.squeeze(0).mean(dim=0).float().cpu().numpy()
                 all_hidden[layer_idx].append(mean_repr)
