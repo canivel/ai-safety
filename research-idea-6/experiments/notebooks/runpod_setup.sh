@@ -41,8 +41,6 @@ if [ -z "$HF_TOKEN" ]; then
     exit 1
 fi
 echo "HF_TOKEN is set."
-huggingface-cli login --token "$HF_TOKEN" 2>/dev/null || (uv pip install --system huggingface_hub && huggingface-cli login --token "$HF_TOKEN")
-echo "Authenticated with HuggingFace."
 
 # --- 3. Install uv and Dependencies ---
 echo ""
@@ -54,6 +52,10 @@ if ! command -v uv &> /dev/null; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
     export PATH="$HOME/.local/bin:$PATH"
 fi
+
+# Now authenticate with HuggingFace (uv is available for fallback)
+huggingface-cli login --token "$HF_TOKEN" 2>/dev/null || (uv pip install --system huggingface_hub && huggingface-cli login --token "$HF_TOKEN")
+echo "Authenticated with HuggingFace."
 
 uv pip install --system \
     "transformers>=4.50.0" \

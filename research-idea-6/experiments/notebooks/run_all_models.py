@@ -199,7 +199,7 @@ def run_model(model_id):
 
     load_time = (datetime.now() - load_start).total_seconds()
     vram_used = torch.cuda.max_memory_allocated() / 1e9
-    vram_total = torch.cuda.get_device_properties(0).total_mem / 1e9
+    vram_total = torch.cuda.get_device_properties(0).total_memory / 1e9
 
     print(f"[{model_short}] Loaded in {load_time:.1f}s | {num_layers} layers | VRAM: {vram_used:.1f}/{vram_total:.1f} GB")
 
