@@ -219,13 +219,18 @@ def run_model(model_id):
     # --- Helper functions (closure over model/tokenizer) ---
     def generate_response(prompt, system_prompt="You are a helpful assistant.",
                           max_new_tokens=250, temperature=0.1):
-        messages = [{"role": "user", "content": f"{system_prompt}\n\n{prompt}"}]
         if is_text_only:
+            # 1B: plain string content
+            messages = [{"role": "user", "content": f"{system_prompt}\n\n{prompt}"}]
             inputs = tokenizer.apply_chat_template(
                 messages, add_generation_prompt=True, tokenize=True,
                 return_dict=True, return_tensors="pt",
             ).to(model.device)
         else:
+            # 4B+: structured content format for AutoProcessor
+            messages = [{"role": "user", "content": [
+                {"type": "text", "text": f"{system_prompt}\n\n{prompt}"},
+            ]}]
             inputs = tokenizer.apply_chat_template(
                 messages, add_generation_prompt=True, tokenize=True,
                 return_dict=True, return_tensors="pt",
