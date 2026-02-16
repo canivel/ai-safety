@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fixed probing experiment + steering ablation for Gemma 3-4B.
+Fixed probing experiment + steering ablation for Gemma 3 models.
 
 Fixes the methodological problems in v1/v2:
 1. Mean-pooled probing was detecting name token embeddings (trivially 100%)
@@ -10,28 +10,18 @@ Fixes the methodological problems in v1/v2:
 This script runs THREE probing variants + steering:
 
 Variant A: Last-token only probing
-  - Uses hidden state at the LAST token position only
-  - If gender info appears here, the model propagated it via attention
-  - This is the position that directly shapes the output
-
-Variant B: Question-tokens only probing
-  - Mean-pools ONLY over non-name tokens (excludes "Hi, my name is {name}.")
-  - If gender is detectable without the name tokens, model spread it
-
+Variant B: Question-tokens only probing (name tokens excluded)
 Variant C: Held-out name generalization
-  - Train probe on 15 name pairs, test on 10 unseen name pairs
-  - If accuracy stays high, model has an abstract gender concept
-  - If accuracy drops to chance, it was memorizing specific names
-
 Variant D: Steering/Ablation
-  - Extract gender direction from probe weights
-  - Subtract from activations, re-measure KL divergence
-  - If KL drops to same-gender baseline, confirms causal link
 
 Usage:
-    python run_probing_v3.py
+    python run_probing_v3.py              # defaults to 4b
+    python run_probing_v3.py 1b
+    python run_probing_v3.py 4b
+    python run_probing_v3.py 12b
 """
 
+import sys
 import torch
 import torch.nn.functional as F
 import numpy as np
@@ -45,10 +35,51 @@ from sklearn.model_selection import cross_val_score, StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 
-# === CONFIG ===
-MODEL_ID = "google/gemma-3-4b-it"
-MODEL_SHORT = "gemma-3-4b-it"
-NUM_LAYERS = 34  # transformer layers (+ 1 embedding = 35 total)
+# === MODEL REGISTRY ===
+# Gemma 3-1B uses Gemma3ForCausalLM (no vision tower)
+# Gemma 3-4B/12B/27B use Gemma3ForConditionalGeneration (with vision tower)
+MODEL_REGISTRY = {
+    "1b": {
+        "model_id": "google/gemma-3-1b-it",
+        "model_short": "gemma-3-1b-it",
+        "num_layers": 26,
+        "model_class": "causal",  # Gemma3ForCausalLM
+        # layers at model.model.layers[i], embed at model.model.embed_tokens
+    },
+    "4b": {
+        "model_id": "google/gemma-3-4b-it",
+        "model_short": "gemma-3-4b-it",
+        "num_layers": 34,
+        "model_class": "conditional",  # Gemma3ForConditionalGeneration
+        # layers at model.model.language_model.layers[i]
+    },
+    "12b": {
+        "model_id": "google/gemma-3-12b-it",
+        "model_short": "gemma-3-12b-it",
+        "num_layers": 48,
+        "model_class": "conditional",
+        # layers at model.model.language_model.layers[i]
+    },
+    "27b": {
+        "model_id": "google/gemma-3-27b-it",
+        "model_short": "gemma-3-27b-it",
+        "num_layers": 62,
+        "model_class": "conditional",
+    },
+}
+
+# Parse CLI argument
+MODEL_SIZE = sys.argv[1] if len(sys.argv) > 1 else "4b"
+if MODEL_SIZE not in MODEL_REGISTRY:
+    print(f"ERROR: Unknown model size '{MODEL_SIZE}'. Choose from: {list(MODEL_REGISTRY.keys())}")
+    sys.exit(1)
+
+MODEL_CFG = MODEL_REGISTRY[MODEL_SIZE]
+MODEL_ID = MODEL_CFG["model_id"]
+MODEL_SHORT = MODEL_CFG["model_short"]
+NUM_LAYERS = MODEL_CFG["num_layers"]
+MODEL_CLASS = MODEL_CFG["model_class"]
+
 RESULTS_DIR = Path("../results/gemma3_probing_v3")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -145,7 +176,6 @@ def main():
     t0 = datetime.now()
 
     # --- Load model ---
-    from transformers import AutoProcessor, Gemma3ForConditionalGeneration
     from huggingface_hub import login
 
     hf_token = os.environ.get("HF_TOKEN")
@@ -154,11 +184,21 @@ def main():
     else:
         print("ERROR: Set HF_TOKEN"); exit(1)
 
-    print(f"\n[1/6] Loading {MODEL_ID}...")
-    tokenizer = AutoProcessor.from_pretrained(MODEL_ID)
-    model = Gemma3ForConditionalGeneration.from_pretrained(
-        MODEL_ID, torch_dtype=torch.bfloat16, device_map="auto",
-    )
+    print(f"\n[1/6] Loading {MODEL_ID} (class={MODEL_CLASS})...")
+
+    if MODEL_CLASS == "causal":
+        from transformers import AutoTokenizer, Gemma3ForCausalLM
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+        model = Gemma3ForCausalLM.from_pretrained(
+            MODEL_ID, torch_dtype=torch.bfloat16, device_map="auto",
+        )
+    else:
+        from transformers import AutoProcessor, Gemma3ForConditionalGeneration
+        tokenizer = AutoProcessor.from_pretrained(MODEL_ID)
+        model = Gemma3ForConditionalGeneration.from_pretrained(
+            MODEL_ID, torch_dtype=torch.bfloat16, device_map="auto",
+        )
+
     model.eval()
     tok = tokenizer.tokenizer if hasattr(tokenizer, 'tokenizer') else tokenizer
 
@@ -432,13 +472,20 @@ def main():
                 return hook_fn
 
             # Get the target layer module
-            # For Gemma3ForConditionalGeneration, path is:
-            # model.model.language_model.layers[layer_idx]
+            # causal: model.model.layers[i] / model.model.embed_tokens
+            # conditional: model.model.language_model.layers[i] / model.model.language_model.embed_tokens
             # steer_layer 0 = embedding, so actual transformer layer = steer_layer - 1
-            if steer_layer > 0:
-                target_module = model.model.language_model.layers[steer_layer - 1]
+            if MODEL_CLASS == "causal":
+                layers = model.model.layers
+                embed = model.model.embed_tokens
             else:
-                target_module = model.model.language_model.embed_tokens
+                layers = model.model.language_model.layers
+                embed = model.model.language_model.embed_tokens
+
+            if steer_layer > 0:
+                target_module = layers[steer_layer - 1]
+            else:
+                target_module = embed
 
             # Register hook
             if strength > 0:
