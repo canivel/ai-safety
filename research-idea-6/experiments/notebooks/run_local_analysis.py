@@ -137,7 +137,7 @@ def run_probing_with_permutation(model_short):
 
     with open(out_path, "w") as f:
         json.dump(results, f, indent=2)
-    print(f"[{model_short}] Saved → {out_path.name}")
+    print(f"[{model_short}] Saved: {out_path.name}")
 
 
 def generate_kl_charts():

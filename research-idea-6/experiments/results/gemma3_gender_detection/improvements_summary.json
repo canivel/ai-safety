@@ -1,0 +1,38 @@
+[
+  {
+    "model": "gemma-3-1b-it",
+    "probing_best": 1.0,
+    "null_best_mean": 0.5092,
+    "probing_p_value": 0.0,
+    "kl_cross_gender": 0.00172581606071617,
+    "kl_same_gender": 0.00022595422274207522,
+    "kl_ratio": 7.63790134024702
+  },
+  {
+    "model": "gemma-3-4b-it",
+    "probing_best": 1.0,
+    "null_best_mean": 0.5127999999999999,
+    "probing_p_value": 0.0,
+    "kl_cross_gender": 0.006238526930101216,
+    "kl_same_gender": 0.0013442616308748257,
+    "kl_ratio": 4.640857692294077
+  },
+  {
+    "model": "gemma-3-12b-it",
+    "probing_best": 1.0,
+    "null_best_mean": 0.5183999999999999,
+    "probing_p_value": 0.0,
+    "kl_cross_gender": 0.0184507517144084,
+    "kl_same_gender": 0.002387405897025019,
+    "kl_ratio": 7.728368157840335
+  },
+  {
+    "model": "gemma-3-27b-it",
+    "probing_best": 1.0,
+    "null_best_mean": 0.5212,
+    "probing_p_value": 0.0,
+    "kl_cross_gender": 0.011979623157531023,
+    "kl_same_gender": 0.0021378240469493905,
+    "kl_ratio": 5.603652543166767
+  }
+]
