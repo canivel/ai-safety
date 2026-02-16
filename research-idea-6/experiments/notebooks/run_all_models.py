@@ -196,10 +196,9 @@ def run_model(model_id):
         )
         model.config.output_hidden_states = True
         model.eval()
-        lm_model = model  # direct access for hidden states
-        gen_device = model.device
     else:
         # 4B/12B/27B are multimodal, use Gemma3ForConditionalGeneration
+        # For text-only inputs (no pixel_values), it works the same as CausalLM
         from transformers import Gemma3ForConditionalGeneration
         tokenizer = AutoProcessor.from_pretrained(model_id)
         model = Gemma3ForConditionalGeneration.from_pretrained(
@@ -207,8 +206,6 @@ def run_model(model_id):
         )
         model.config.output_hidden_states = True
         model.eval()
-        lm_model = model.language_model  # language model for hidden states
-        gen_device = model.device if hasattr(model, 'device') else "cuda"
 
     num_layers = MODEL_REGISTRY[model_id]["num_layers"]
     hidden_size = MODEL_REGISTRY[model_id]["hidden_size"]
@@ -250,10 +247,7 @@ def run_model(model_id):
             inputs = tok(text, return_tensors="pt",
                         truncation=True, max_length=128).to("cuda")
             with torch.no_grad():
-                if is_text_only:
-                    outputs = model(**inputs)
-                else:
-                    outputs = lm_model(**inputs)
+                outputs = model(**inputs)
             for layer_idx, hs in enumerate(outputs.hidden_states):
                 mean_repr = hs.squeeze(0).mean(dim=0).float().cpu().numpy()
                 all_hidden[layer_idx].append(mean_repr)
