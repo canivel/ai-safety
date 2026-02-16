@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 private/
+private-blog/
 # C extensions
 *.so
 

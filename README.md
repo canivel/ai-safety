@@ -1,22 +1,26 @@
 # AI Safety Research Ideas
 
 ![Status](https://img.shields.io/badge/Status-Active%20Research-brightgreen)
-![Focus](https://img.shields.io/badge/Focus-Mechanistic%20Interpretability-blue)
+![Focus](https://img.shields.io/badge/Focus-Mechanistic%20Interpretability%20%26%20Agentic%20Safety-blue)
 ![Inspired%20By](https://img.shields.io/badge/Inspired%20By-Neel%20Nanda-purple)
 
 ## Overview
 
-This repository consolidates research ideas for mechanistic interpretability projects, primarily inspired by Neel Nanda's blogs, podcasts, and research directions. After exploring multiple project ideas, **Research Idea 6 (User Modeling & Sycophancy)** has been selected for active development.
+This repository consolidates research ideas for AI safety projects, primarily inspired by Neel Nanda's blogs, podcasts, and research directions. After exploring multiple project ideas, **Research Idea 6 (User Modeling & Sycophancy)** was completed with significant findings, and the focus is now shifting to **Research Idea 7 (Agentic Safety: Parallel Agent Coordination)**.
 
 ---
 
 ## Current Focus
 
-> **ACTIVE PROJECT**: Research Idea 6 - *From Inference to Pandering: User Modeling and Sycophancy Circuits*
+> **ACTIVE PROJECT**: Research Idea 7 - *Agentic Safety: Parallel Agent Coordination*
 
-Investigating how RLHF-trained models build internal user representations and how these drive sycophantic behavior. Using Cross-Coders to compare Base vs Chat models and identify ablatable "user modeling" features.
+Investigating safety properties and failure modes of multi-agent systems that work in parallel — coordination risks, emergent behaviors, and oversight challenges when autonomous agents collaborate on shared tasks.
 
-**[Go to Active Project →](research-idea-6/)**
+> **COMPLETED**: Research Idea 6 - *From Inference to Pandering: User Modeling and Sycophancy Circuits*
+
+Successfully demonstrated that even small RLHF-tuned models (Qwen2.5-0.5B-Instruct) implicitly profile users by gender: 100% probing accuracy, zero chain-of-thought signal, and substantially divergent outputs. This pattern — **the model knows, doesn't think about it, but acts on it** — represents a blind spot in CoT-based safety monitoring. Scaling to larger models is likely but hard to verify without weight access, motivating a shift toward higher-level agentic safety research.
+
+**[Go to Completed Project (Idea 6) →](research-idea-6/)**
 
 ---
 
@@ -29,114 +33,68 @@ Investigating how RLHF-trained models build internal user representations and ho
 | [3](research-idea-3/) | The Anatomy of Refusal: Decomposing the "Jailbreak" Mechanism | Model Biology / Safety Filters | Medium | ![Documented](https://img.shields.io/badge/-Documented-lightgrey) |
 | [4](research-idea-4/) | Sparse Probing for "Sleeping" Capabilities | Applied Interpretability / Monitoring | Medium | ![Documented](https://img.shields.io/badge/-Documented-lightgrey) |
 | [5](research-idea-5/) | Cross-Modal Semantics in Gemma 3 | Frontier Model Biology / Multimodal | High | ![Documented](https://img.shields.io/badge/-Documented-lightgrey) |
-| **[6](research-idea-6/)** | **From Inference to Pandering: User Modeling and Sycophancy Circuits** | **Model Biology / Science of Misalignment** | **High** | ![Active](https://img.shields.io/badge/-ACTIVE-brightgreen) |
+| [6](research-idea-6/) | From Inference to Pandering: User Modeling and Sycophancy Circuits | Model Biology / Science of Misalignment | High | ![Completed](https://img.shields.io/badge/-COMPLETED-blue) |
+| **7** | **Agentic Safety: Parallel Agent Coordination** | **Agentic Systems / Oversight** | **High** | ![Active](https://img.shields.io/badge/-ACTIVE-brightgreen) |
 
 ---
 
-## Active Project Details
+## Completed: Research Idea 6 — User Modeling & Sycophancy
 
-### Research Idea 6: User Modeling & Sycophancy
+### Key Findings
 
-![Week](https://img.shields.io/badge/Timeline-4%20Weeks-blue)
-![Track](https://img.shields.io/badge/Track-Simple%20→%20Advanced-orange)
-![Tools](https://img.shields.io/badge/Tools-Gemma%20Scope%20Cross--Coders-purple)
-![Progress](https://img.shields.io/badge/Progress-Phase%202%20Complete-green)
+We built a three-layer detection framework to catch implicit user modeling in RLHF-tuned models:
 
-**Core Question**: How does RLHF create user modeling circuits that drive sycophancy?
+**Layer 1 — Probing Classifiers**: Linear probes achieve **100% accuracy** at detecting gender from hidden states at Layers 2, 3, 20, and 21 of Qwen2.5-0.5B-Instruct. The model perfectly encodes user gender from names alone.
 
-**Hypothesis**: Chat models build internal "User Model" features (e.g., "User is novice") that causally influence response tone, leading to sycophantic behavior.
+**Layer 2 — CoT Monitoring**: Zero gendered pronouns and zero explicit gender reasoning across all chain-of-thought outputs. The model never overtly reasons about gender.
 
----
+**Layer 3 — Output Divergence**: Average Jaccard similarity of **0.464** across 25 minimal-pair questions. The most extreme case (vacation planning) scored 0.08 — nearly completely different responses for the same question.
 
-### Research Methodology
+**The Pattern**: The model **knows** gender, **doesn't think about** it, but **acts on** it. This is implicit user modeling — invisible to chain-of-thought monitoring, the primary safety technique proposed for advanced AI oversight.
 
-Following Neel Nanda's framework, research projects progress through three stages:
+### Why We're Moving On
 
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   EXPLORATION   │ →   │   REFINEMENT    │ →   │ COMMUNICATION   │
-│                 │     │                 │     │                 │
-│ "What is going  │     │ "Is my hypo-    │     │ "Write it up,   │
-│  on here?"      │     │  thesis true?"  │     │  sanity check"  │
-│                 │     │                 │     │                 │
-│ North star:     │     │ North star:     │     │ North star:     │
-│ GAIN SURFACE    │     │ RIGOROUS        │     │ CLEAR           │
-│ AREA            │     │ EVIDENCE        │     │ PRESENTATION    │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-       ▲
-       │
-   WE ARE HERE
-```
+The user modeling findings are strong for small open-weight models. However, scaling this research faces a fundamental barrier: **larger frontier models are increasingly closed-weight**. Without access to hidden states, probing classifiers can't run, and the mechanistic evidence that makes the case undeniable is unavailable. Output divergence alone can still be measured, but it lacks the explanatory power of the full three-layer framework.
 
-**Current Stage: EXPLORATION**
+This motivates a shift toward **agentic safety** — a domain where the risks are observable at the system level without requiring model internals, and where the safety challenges are rapidly becoming urgent as multi-agent deployments scale.
 
-In exploration, the key question is: *"What gains me surface area on this problem?"*
+### Notebooks
 
-**Surface area** = connections, information, weird phenomena, random scraps of insight you get when you actually stare at things in a model and notice what's weird in reality.
+- `01_exploration.ipynb` — KL divergence analysis between Pythia models
+- `02_whitebox_interpretability.ipynb` — Comprehensive interpretability techniques tutorial
+- `03_cot_user_modeling_analysis.ipynb` — CoT user modeling pipeline with direction ablation
+- `user_modeling_gender_detection_qwen05.ipynb` — Gender-based implicit user modeling detection
 
-**Our exploration approach:**
-1. **Look at actual data** - Ran models on real text, examined per-token divergences
-2. **Notice weird things** - Found that models diverge most on names, code, rare tokens
-3. **Build foundational tools** - Created reusable functions for activation caching, probing, logit lens
-4. **Don't force a plan** - Let curiosity drive investigation; doing whatever gains surface area
-5. **Qualitative examples first** - Examined specific high-KL tokens before aggregate statistics
+### Observable Signal Experiment
 
-> *"If you don't have a more coherent plan, just do whatever feels like it would get you surface area. You should not feel bad about not having a plan."* - Neel Nanda
+Additionally, we built an observable-signal framework testing user modeling beyond gender — measuring conclusion stability, agreement gradients, confidence-evidence mismatch, and counterfactual resistance across Base vs Chat models. The Chat model showed higher instability (0.250 vs 0.208) and higher counterfactual resistance (0.80 vs 0.60), consistent with RLHF amplifying user-signal sensitivity.
 
 ---
 
-### Current Progress
+## Active: Research Idea 7 — Agentic Safety: Parallel Agent Coordination
 
-#### Completed: Phase 1 - Foundation & Exploration
+*Details and experiment design coming soon.*
 
-**Notebook 1: KL Divergence Exploration** (`01_exploration.ipynb`)
-- Computed per-token KL divergence between Pythia-410M and Pythia-1.4B models
-- Processed 34,965 tokens across 100 documents from the Pile dataset
-- Identified high-divergence positions where models disagree most
-- Created visualizations: distributions, position trends, per-document analysis
-- Key finding: Models diverge most on rare names, code syntax, and domain-specific terms
+### Motivation
 
-**Notebook 2: White-Box Interpretability Deep Dive** (`02_whitebox_interpretability.ipynb`)
-- Comprehensive tutorial on interpretability techniques for alignment research
-- **Activation Caching**: Capturing internal model states with TransformerLens
-- **Residual Stream Analysis**: Tracking information flow through layers
-- **Logit Lens**: Peeking at intermediate layer predictions (detecting when models "change their mind")
-- **Linear Probing**: Finding interpretable directions (sentiment, truthfulness)
-- **Truth Probes**: Detecting when a model "knows" something is true/false
-- **Base vs Instruct Comparison**: Framework for detecting RLHF-induced changes
-- **SAE Introduction**: Sparse Autoencoders for finding interpretable features
+As AI systems move from single-model inference to multi-agent architectures — where autonomous agents plan, delegate, and execute tasks in parallel — new safety challenges emerge that are fundamentally different from single-model alignment:
 
-**Notebook 3: Chain-of-Thought User Modeling Analysis** (`03_cot_user_modeling_analysis.ipynb`)
-- Complete pipeline for detecting and removing user modeling in CoT reasoning
-- **Dataset Creation**: 8 test cases across 4 manipulation types (belief, expertise, emotion, authority)
-- **CoT Generation**: Functions for step-by-step reasoning with customizable parameters
-- **Segmentation**: Parsing CoT into logical segments with user modeling keyword detection
-- **Activation Analysis**: Layer-by-layer comparison of User A vs User B vs Neutral conditions
-- **Linear Probe**: Trained classifier to detect user modeling direction in activation space
-- **Intervention Experiments**: Removing user modeling direction and measuring output similarity
-- **Key Question Answered**: Can we make different users receive identical factual answers by ablating user modeling?
+- **Coordination failures**: Agents working in parallel may take conflicting actions, produce inconsistent outputs, or create race conditions on shared resources
+- **Emergent behaviors**: Individual agents may be aligned, but their collective behavior when operating concurrently can produce unintended outcomes
+- **Oversight gaps**: Human-in-the-loop monitoring becomes harder when multiple agents act simultaneously — the supervisor bottleneck
+- **Responsibility diffusion**: When multiple agents contribute to an outcome, attributing decisions and catching errors becomes harder
+- **Escalation dynamics**: Parallel agents may amplify each other's errors or create feedback loops that single-agent systems wouldn't exhibit
 
-**Notebook 4: Gender-Based User Modeling Detection** (`user_modeling_gender_detection_qwen05.ipynb`)
-- Three-layer interpretability investigation: does Qwen2.5-0.5B-Instruct infer and act on user gender from names?
-- **Dataset**: 25 minimal-pair prompts (identical questions, only male vs female name differs) across stereotype-prone domains (career, hobbies, exercise, salary negotiation)
-- **Part A — Probing Classifiers**: Linear probes achieve **100% accuracy** at Layers 2, 3, 20, and 21 (5-fold CV), confirming the model strongly encodes gender in its hidden states
-- **Part B — CoT Monitoring**: Zero gendered pronouns and zero explicit gender reasoning detected across all 8 CoT-prompted pairs — the model never *overtly* reasons about gender
-- **Part C — Output Divergence**: Average Jaccard similarity of **0.464** across 25 pairs, with extremes ranging from 0.08 (vacation planning) to 1.00 (book recommendation) — the model gives substantially different advice based on the name alone
-- **Key Finding**: The model **knows** gender (probing), **doesn't think about** it (CoT is clean), but **acts on** it (outputs diverge). This is **implicit user modeling** — the most concerning pattern for safety because it is invisible to chain-of-thought monitoring
-- **Most divergent domains**: vacation planning (0.08), musical instruments (0.20), college major choice (0.22)
-- Connects probing classifiers, CoT monitorability (Korbak et al.), and Model Organisms of Misalignment (Anthropic) into a single detection methodology
+### Research Questions
 
-#### In Progress: Phase 3 - Scaling & Validation
-
-- [ ] Run notebook 03 experiments on larger dataset (100+ test cases)
-- [ ] Apply techniques to chat/instruct models (Llama-chat, Mistral-instruct)
-- [ ] Load Gemma Scope SAEs and find sycophancy-related features
-- [ ] Cross-model validation of user modeling direction
-- [ ] Activation patching to identify causal circuits
+1. What failure modes emerge when multiple AI agents coordinate on shared tasks?
+2. How do parallel execution patterns affect the reliability and safety of agent outputs?
+3. What oversight mechanisms are needed when the speed and breadth of agent actions exceed human monitoring capacity?
+4. How can we design coordination protocols that preserve safety properties under parallel execution?
 
 ---
 
-### Key Techniques Implemented
+## Key Techniques Implemented (Idea 6)
 
 | Technique | Purpose | Alignment Application |
 |-----------|---------|----------------------|
@@ -151,53 +109,6 @@ In exploration, the key question is: *"What gains me surface area on this proble
 
 ---
 
-**Approach**:
-1. **Simple Track** (Weeks 1-2): SAEs on Chat model to find user-model features
-2. **Advanced Track** (Weeks 3-4): Cross-Coders to compare Base vs Chat
-
-**Key Deliverables**:
-- Dataset of 170+ sycophancy evaluation prompts
-- Identified user-modeling features
-- Ablation experiments showing sycophancy reduction
-- Paper write-up with results
-
-**Project Structure**:
-```
-research-idea-6/
-├── README.md                    # Project overview
-├── docs/
-│   ├── research_plan.md        # Detailed methodology
-│   └── four_week_plan.md       # Day-by-day execution
-├── resources/
-│   ├── cross_coder_guide.md    # Technical guide
-│   └── sycophancy_literature.md # Background reading
-├── paper/
-│   └── executive_summary_template.md
-└── experiments/
-    ├── notebooks/
-    │   ├── 01_exploration.ipynb                              # KL divergence analysis
-    │   ├── 02_whitebox_interpretability.ipynb                # Interpretability techniques
-    │   ├── 03_cot_user_modeling_analysis.ipynb               # CoT user modeling experiments
-    │   └── user_modeling_gender_detection_qwen05.ipynb       # Gender-based user modeling detection
-    ├── data/
-    │   └── user_modeling_dataset.json           # Test cases for user modeling
-    ├── results/
-    │   ├── kl_divergence_results.parquet        # Raw KL data
-    │   ├── kl_divergence_results.csv
-    │   ├── user_modeling_direction.pt           # Learned direction vector
-    │   ├── user_modeling_probe.pt               # Trained classifier
-    │   └── activation_comparison.csv            # Layer-wise analysis
-    └── figures/
-        ├── kl_divergence_distribution.png
-        ├── kl_by_position.png
-        ├── kl_divergence_analysis.png
-        ├── kl_per_document.png
-        ├── user_modeling_by_layer.png           # Layer activation comparison
-        └── probe_training.png                   # Probe training curves
-```
-
----
-
 ## Alignment with Nanda's Criteria
 
 | Idea | "Pragmatic" Angle | "Agency" Signal | "Model Biology" Question |
@@ -207,7 +118,8 @@ research-idea-6/
 | 3. Refusal Anatomy | Fixing Safety Filters | Granular ablation analysis | Is safety modular or monolithic? |
 | 4. Sparse Probing | Better Monitors | Challenging recent baselines | Do SAEs help extracting "hidden" knowledge? |
 | 5. Multimodal Semantics | Understanding New Architectures | Using Gemma 3 (very new) | Are concepts modality-invariant? |
-| **6. User Modeling** | **Fixing Sycophancy** | **Cross-Coders for Base vs Chat** | **How does RLHF create user modeling circuits?** |
+| 6. User Modeling | Fixing Sycophancy | Cross-Coders for Base vs Chat | How does RLHF create user modeling circuits? |
+| **7. Agentic Safety** | **Safe multi-agent deployment** | **Parallel coordination protocols** | **What breaks when agents work together?** |
 
 ---
 
@@ -234,19 +146,6 @@ Each research idea folder contains:
 
 ---
 
-## Selection Criteria
-
-Research Idea 6 was selected based on:
-
-| Criterion | Score | Reasoning |
-|-----------|-------|-----------|
-| **Personal Interest** | High | Fascinated by how models "see" users |
-| **Tractability** | High | Clear methodology, available tools |
-| **Safety Relevance** | High | Sycophancy is a real deployment problem |
-| **Tooling** | Excellent | Gemma Scope Cross-Coders available |
-| **Novelty** | High | Mechanistic view of sycophancy is underexplored |
-
----
-
 *Repository initialized: January 2026*
-*Active project: Research Idea 6 - User Modeling & Sycophancy*
+*Completed: Research Idea 6 - User Modeling & Sycophancy (February 2026)*
+*Active project: Research Idea 7 - Agentic Safety: Parallel Agent Coordination*
