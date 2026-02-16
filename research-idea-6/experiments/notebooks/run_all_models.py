@@ -6,10 +6,12 @@ Runs all 4 models sequentially, saves results after each layer.
 Usage (on RunPod via SSH):
     tmux new -s experiment
     cd /workspace/ai-safety/research-idea-6/experiments/notebooks
-    python run_all_models.py
+    python run_all_models.py                     # all 4 models
+    python run_all_models.py --models 1b 4b 12b  # specific models only
     # Ctrl+B then D to detach — reconnect later with: tmux attach -t experiment
 """
 
+import argparse
 import torch
 import numpy as np
 import pandas as pd
@@ -607,10 +609,28 @@ def generate_cross_model_comparison():
 # =============================================================================
 
 if __name__ == "__main__":
+    # Parse arguments
+    MODEL_SHORTCUTS = {
+        "1b": "google/gemma-3-1b-it",
+        "4b": "google/gemma-3-4b-it",
+        "12b": "google/gemma-3-12b-it",
+        "27b": "google/gemma-3-27b-it",
+    }
+
+    parser = argparse.ArgumentParser(description="Run Gemma 3 user modeling experiments")
+    parser.add_argument("--models", nargs="+", choices=list(MODEL_SHORTCUTS.keys()),
+                        default=None, help="Which models to run (e.g. --models 1b 4b 12b)")
+    args = parser.parse_args()
+
+    if args.models:
+        models_to_run = [MODEL_SHORTCUTS[m] for m in args.models]
+    else:
+        models_to_run = MODELS
+
     print("=" * 70)
     print("  Gemma 3 User Modeling Detection — Automated Runner")
     print("=" * 70)
-    print(f"\nModels: {len(MODELS)}")
+    print(f"\nModels: {[m.split('/')[-1] for m in models_to_run]}")
     print(f"Results dir: {RESULTS_DIR.resolve()}")
     print(f"GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'NO GPU'}")
     print(f"Start time: {datetime.now().isoformat()}")
@@ -626,9 +646,9 @@ if __name__ == "__main__":
         print("ERROR: Set HF_TOKEN environment variable first.")
         exit(1)
 
-    # Run all models
+    # Run selected models
     total_start = datetime.now()
-    for model_id in MODELS:
+    for model_id in models_to_run:
         model_start = datetime.now()
         try:
             run_model(model_id)
