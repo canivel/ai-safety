@@ -16,9 +16,9 @@ This repository consolidates research ideas for AI safety projects, primarily in
 
 Investigating safety properties and failure modes of multi-agent systems that work in parallel — coordination risks, emergent behaviors, and oversight challenges when autonomous agents collaborate on shared tasks.
 
-> **COMPLETED**: Research Idea 6 - *From Inference to Pandering: User Modeling and Sycophancy Circuits*
+> **COMPLETED**: Research Idea 6 - *Implicit User Modeling: Gender Mechanistic Evidence*
 
-Successfully demonstrated that even small RLHF-tuned models (Qwen2.5-0.5B-Instruct) implicitly profile users by gender: 100% probing accuracy, zero chain-of-thought signal, and substantially divergent outputs. This pattern — **the model knows, doesn't think about it, but acts on it** — represents a blind spot in CoT-based safety monitoring. Scaling to larger models is likely but hard to verify without weight access, motivating a shift toward higher-level agentic safety research.
+Cross-family study across **5 models** (Gemma 3 1B/4B/12B, Qwen 2.5-7B, Mistral 7B) with **4 probing variants** and **3 mechanistic experiments** demonstrates that LLMs silently encode user gender from names (88–100% probing accuracy), act on it in outputs (up to 5.3x KL divergence ratio), and never mention it in reasoning (0/80 CoT instances). Causal mediation confirms the gender direction reduces first-token KL by 48.3%. Circuit tracing identifies key attention heads. SAE analysis shows gender is encoded in superposition (0/16,384 significant features). The pattern — **the model knows, doesn't think about it, but acts on it** — represents a blind spot in CoT-based safety monitoring.
 
 **[Go to Completed Project (Idea 6) →](research-idea-6/)**
 
@@ -38,38 +38,57 @@ Successfully demonstrated that even small RLHF-tuned models (Qwen2.5-0.5B-Instru
 
 ---
 
-## Completed: Research Idea 6 — User Modeling & Sycophancy
+## Completed: Research Idea 6 — Implicit User Modeling (Gender Mechanistic Evidence)
+
+### Study Design
+
+Five models. Three architecture families. Four probing variants. Three mechanistic experiments.
+
+| Model | Family | Parameters | Best Probe Acc | KL Ratio |
+|-------|--------|-----------|----------------|----------|
+| Gemma 3-1B | Google | 1B | 88.3% (L14) | 1.11x |
+| Gemma 3-4B | Google | 4B | 96.8% (L17) | 5.23x |
+| Gemma 3-12B | Google | 12B | 100.0% (L25) | 5.31x |
+| Qwen 2.5-7B | Alibaba | 7B | 99.8% (L9) | 1.18x |
+| Mistral 7B | Mistral AI | 7B | 99.5% (L15) | 1.81x |
+
+**Dataset**: 200 questions × 45 male names × 45 female names + 25 ambiguous names = 400 gendered prompts per model.
 
 ### Key Findings
 
-We built a three-layer detection framework to catch implicit user modeling in RLHF-tuned models:
+**Probing (4 variants)**:
+- **Last-token**: 88–100% accuracy, embedding baseline exactly 50% (chance) for all models — proving the signal is from transformer processing, not token identity
+- **Question-only**: 99.8–100% accuracy with name tokens excluded — gender propagates into shared representations
+- **Held-out names**: 98.8–100% generalization to unseen names — the probe learns abstract gender, not name lookup
+- **Steering ablation**: Cross-gender KL up to 5.31x higher than same-gender (Gemma 12B); amplification to 28.8x at strength=10
 
-**Layer 1 — Probing Classifiers**: Linear probes achieve **100% accuracy** at detecting gender from hidden states at Layers 2, 3, 20, and 21 of Qwen2.5-0.5B-Instruct. The model perfectly encodes user gender from names alone.
+**CoT Monitoring**: 0/80 gendered pronouns and 0/80 explicit gender reasoning across all 5 models. The model never overtly reasons about gender.
 
-**Layer 2 — CoT Monitoring**: Zero gendered pronouns and zero explicit gender reasoning across all chain-of-thought outputs. The model never overtly reasons about gender.
+**Mechanistic Experiments (Gemma 3 4B)**:
+- **Causal mediation**: Ablating gender direction reduces first-token KL by 48.3% at optimal strength. Random direction control: only 9.6% change vs 980% for gender direction.
+- **Circuit tracing**: Top 5 attention heads at layers 4–14 account for 8.3% encoding drop; 20 heads (7.4% of 272 total) cause 21.5% drop. Three-phase circuit: early encoding → mid propagation → late aggregation.
+- **SAE analysis**: 0 of 16,384 Gemma Scope 2 features show significant gender differential despite 95% probe accuracy — gender is encoded in superposition.
 
-**Layer 3 — Output Divergence**: Average Jaccard similarity of **0.464** across 25 minimal-pair questions. The most extreme case (vacation planning) scored 0.08 — nearly completely different responses for the same question.
+**The Pattern**: The model **knows** gender, **doesn't think about** it, but **acts on** it — invisible to chain-of-thought monitoring.
 
-**The Pattern**: The model **knows** gender, **doesn't think about** it, but **acts on** it. This is implicit user modeling — invisible to chain-of-thought monitoring, the primary safety technique proposed for advanced AI oversight.
+### Experiment Scripts
 
-### Why We're Moving On
+```bash
+# GPU extraction (~20 min on A40 for all models)
+python extract_hidden_states.py --model gemma4b
 
-The user modeling findings are strong for small open-weight models. However, scaling this research faces a fundamental barrier: **larger frontier models are increasingly closed-weight**. Without access to hidden states, probing classifiers can't run, and the mechanistic evidence that makes the case undeniable is unavailable. Output divergence alone can still be measured, but it lacks the explanatory power of the full three-layer framework.
+# CPU probing analysis
+python analyze_probing_v4.py all
 
-This motivates a shift toward **agentic safety** — a domain where the risks are observable at the system level without requiring model internals, and where the safety challenges are rapidly becoming urgent as multi-agent deployments scale.
+# Mechanistic experiments (GPU)
+python run_kl_strength_sweep.py gemma4b     # Causal mediation
+python run_circuit_tracing.py gemma4b        # Attention head ablation
+python run_sae_analysis.py                   # SAE feature analysis
+```
 
-### Notebooks
+### Blog Post
 
-- `01_exploration.ipynb` — KL divergence analysis between Pythia models
-- `02_whitebox_interpretability.ipynb` — Comprehensive interpretability techniques tutorial
-- `03_cot_user_modeling_analysis.ipynb` — CoT user modeling pipeline with direction ablation
-- `user_modeling_gender_detection_qwen05.ipynb` — Gender-based implicit user modeling detection
-
-### Observable Signal Experiment
-
-Additionally, we built an observable-signal framework testing user modeling beyond gender — measuring conclusion stability, agreement gradients, confidence-evidence mismatch, and counterfactual resistance across Base vs Chat models. The Chat model showed higher instability (0.250 vs 0.208) and higher counterfactual resistance (0.80 vs 0.60), consistent with RLHF amplifying user-signal sensitivity.
-
-**Full write-up**: [Your AI Is Profiling You — And Its Chain of Thought Won't Tell You](https://canivel.substack.com/p/your-ai-is-profiling-you-and-its?r=j986h)
+**Full write-up**: [Your AI Is Profiling You — Part II: Gender Mechanistic Evidence](https://canivel.substack.com/p/your-ai-is-profiling-you-and-its?r=j986h)
 
 ---
 

@@ -38,10 +38,18 @@ experiments/
 ├── docs/
 │   └── observable_signal_experiment.md  # Output-only detection experiment
 ├── notebooks/
-│   └── 01_model_diffing_setup.ipynb  # Day 1 notebook
+│   ├── 01_model_diffing_setup.ipynb    # Day 1 notebook (early exploration)
+│   ├── extract_hidden_states.py        # GPU: hidden state extraction for all models
+│   ├── analyze_probing_v4.py           # CPU: 4-variant probing analysis
+│   ├── run_probing_v3.py              # GPU: v3 probing (predecessor to v4)
+│   ├── run_probing_v4.py              # GPU: v4 probing pipeline
+│   ├── run_all_models.py              # GPU: multi-model extraction runner
+│   ├── run_causal_mediation.py        # GPU: causal mediation experiment
+│   ├── run_kl_strength_sweep.py       # GPU: KL strength sweep (dose-response)
+│   ├── run_circuit_tracing.py         # GPU: attention head circuit tracing
+│   └── run_sae_analysis.py           # GPU: SAE feature analysis with Gemma Scope 2
 ├── data/
 │   └── user_persona_prompts.json     # Prompt dataset
-│   └── observable_signal_minimal_pairs.json  # Minimal-pair prompts
 ├── src/
 │   ├── __init__.py           # Package init
 │   ├── model_diffing.py      # Core stereo model runner
@@ -49,7 +57,12 @@ experiments/
 │   ├── analysis.py           # Latent analysis utilities
 │   ├── observable_signals.py # Output-only scoring utilities
 │   └── visualization.py      # Plotting and dashboards
-├── results/                  # Output directory (created on run)
+├── results/
+│   ├── gemma3_gender_detection/       # v1-v3 results (Gemma 3 family)
+│   ├── cross_family_probing_v4/       # v4: 5 models, 200 questions
+│   ├── causal_mediation/              # Causal mediation + KL sweep results
+│   ├── circuit_tracing/               # Attention head analysis results
+│   └── sae_analysis/                  # SAE feature analysis results
 └── figures/                  # Saved figures (created on run)
 ```
 
@@ -119,24 +132,40 @@ Gemma models require accepting the license:
 
 ## Experiment Workflow
 
-### Day 1: Find User Model Features
+### Phase 1: Hidden State Extraction (GPU)
 
-1. Load both models (stereo setup)
-2. Run User Persona prompts (Novice vs Expert)
-3. Compare activations / Cross-Coder latents
-4. Identify consistent "User is Novice" features
+Extract hidden states for all 5 models using `extract_hidden_states.py`:
 
-### Day 2: Sycophancy Analysis
+```bash
+python extract_hidden_states.py --model gemma1b
+python extract_hidden_states.py --model gemma4b
+python extract_hidden_states.py --model gemma12b
+python extract_hidden_states.py --model qwen7b
+python extract_hidden_states.py --model mistral7b
+```
 
-1. Run Sycophancy trigger prompts (Biased vs Neutral)
-2. Find features that correlate with sycophantic behavior
-3. Cross-reference with User Model features
+### Phase 2: Probing Analysis (CPU)
 
-### Day 3: Causal Intervention
+Run 4-variant probing with `analyze_probing_v4.py`:
 
-1. Clamp identified features
-2. Measure response changes
-3. Test if ablation reduces sycophancy
+```bash
+python analyze_probing_v4.py all
+```
+
+Produces: last-token accuracy, question-only accuracy, held-out generalization, steering KL ratios, permutation null tests, and ambiguous name classification.
+
+### Phase 3: Mechanistic Experiments (GPU)
+
+```bash
+# Causal mediation: KL strength sweep with dose-response curve
+python run_kl_strength_sweep.py gemma4b
+
+# Circuit tracing: attention head ablation study
+python run_circuit_tracing.py gemma4b
+
+# SAE analysis: Gemma Scope 2 feature decomposition
+python run_sae_analysis.py
+```
 
 ## Dataset: User Persona Prompts
 
@@ -148,40 +177,51 @@ Located at `data/user_persona_prompts.json`:
 - **Implicit Age**: Age cues for response adaptation
 - **Emotional State**: Distressed vs Calm framing
 
-## Expected Outputs
+## Results Summary
 
-After running the Day 1 notebook:
+### Cross-Family Probing v4 (5 models, 200 questions)
 
-1. `results/day1_summary.json` - Analysis summary
-2. `results/user_model_candidates.png` - Top candidate features
-3. `results/feature_verification.png` - Verification results
+| Model | Last-Token | Q-Only | Held-Out | KL Ratio | CoT Signal |
+|-------|-----------|--------|---------|---------|-----------|
+| Gemma 3-1B | 88.3% | 99.8% | 100.0% | 1.11x | 0/16 |
+| Gemma 3-4B | 96.8% | 100.0% | 100.0% | 5.23x | 0/16 |
+| Gemma 3-12B | 100.0% | 100.0% | 100.0% | 5.31x | 0/16 |
+| Qwen 2.5-7B | 99.8% | 100.0% | 100.0% | 1.18x | 0/16 |
+| Mistral 7B | 99.5% | 100.0% | 98.8% | 1.81x | 0/16 |
+
+Embedding-layer accuracy: **50.0% (chance)** for all models — confirming signal is from transformer processing.
+
+### Mechanistic Experiments (Gemma 3 4B)
+
+- **Causal mediation**: 48.3% first-token KL reduction at strength=1.0; random direction control only 9.6% change vs 980%
+- **Circuit tracing**: 20 heads (7.4% of 272) cause 21.5% accuracy drop. Three-phase circuit: L4-8 encoding → L14 propagation → L30 aggregation
+- **SAE analysis**: 0/16,384 Gemma Scope 2 features show significant gender differential — gender encoded in superposition
 
 ## Troubleshooting
 
 ### "CUDA out of memory"
-- Use fp16: `dtype=torch.float16`
-- Reduce batch size
-- Use Colab with GPU runtime
-
-### "ModuleNotFoundError: dictionary_learning"
-```bash
-pip install dictionary-learning
-# or
-git clone https://github.com/saprmarks/dictionary_learning.git
-```
+- Use bf16: `dtype=torch.bfloat16` (default for Gemma 3)
+- A40 (48GB) fits all models up to 12B
+- 27B requires H100 80GB+
 
 ### "Access denied" for Gemma models
-- Accept license at https://huggingface.co/google/gemma-2-2b
-- Ensure token has read access
+- Accept license at https://huggingface.co/google/gemma-3-4b-it
+- Set `HF_TOKEN` environment variable
+
+### Gemma 3 architecture notes
+- **1B**: Text-only → `Gemma3ForCausalLM` + `AutoTokenizer`
+- **4B/12B/27B**: Multimodal → `Gemma3ForConditionalGeneration` + `AutoProcessor`
+- Hidden states: pass `output_hidden_states=True` in forward call, NOT via config
 
 ## References
 
-- [Gemma 2 Technical Report](https://arxiv.org/abs/2408.00118)
-- [Cross-Coders for Model Diffing](https://github.com/saprmarks/dictionary_learning)
-- [TransformerLens Documentation](https://transformerlensorg.github.io/TransformerLens/)
-- [A Pragmatic Vision for Interpretability](https://neelnanda.io/pragmatic-interpretability)
+- [Gemma 3 Technical Report](https://arxiv.org/abs/2503.19786)
+- [Gemma Scope 2: SAEs for Gemma 3](https://huggingface.co/google/gemma-scope-2-4b-it)
+- [What Kind of User Are You? (ICML 2025)](https://openreview.net/forum?id=si1XJoQeaO)
+- [Demographic Probing Construct Validity (Tonneau et al.)](https://arxiv.org/abs/2601.18486)
 
 ---
 
 *Created: January 2026*
-*Research Idea 6: User Modeling & Sycophancy Circuits*
+*Experiments completed: February 2026*
+*Research Idea 6: Implicit User Modeling — Gender Mechanistic Evidence*

@@ -1,0 +1,183 @@
+{
+  "model_it": "gemma-3-4b-it",
+  "model_pt": null,
+  "target_layer": 17,
+  "n_questions": 100,
+  "probe_accuracy_it": 0.95,
+  "it_sae": {
+    "release": "google/gemma-scope-2-4b-it",
+    "sae_path": "resid_post/layer_17_width_16k_l0_medium",
+    "n_features": 16384,
+    "n_significant_gender_features": 0,
+    "top_20_gender_features": [
+      {
+        "feature_idx": 266,
+        "diff": -22.999435424804688,
+        "abs_diff": 22.999435424804688,
+        "male_mean_act": 165.7829132080078,
+        "female_mean_act": 188.7823486328125,
+        "p_value": 0.246
+      },
+      {
+        "feature_idx": 152,
+        "diff": -15.593017578125,
+        "abs_diff": 15.593017578125,
+        "male_mean_act": 98.21307373046875,
+        "female_mean_act": 113.80609130859375,
+        "p_value": 0.285
+      },
+      {
+        "feature_idx": 502,
+        "diff": 15.379531860351562,
+        "abs_diff": 15.379531860351562,
+        "male_mean_act": 209.2266845703125,
+        "female_mean_act": 193.84715270996094,
+        "p_value": 0.237
+      },
+      {
+        "feature_idx": 117,
+        "diff": -12.18829345703125,
+        "abs_diff": 12.18829345703125,
+        "male_mean_act": 524.622314453125,
+        "female_mean_act": 536.8106079101562,
+        "p_value": 0.672
+      },
+      {
+        "feature_idx": 909,
+        "diff": -11.0924072265625,
+        "abs_diff": 11.0924072265625,
+        "male_mean_act": 349.2276306152344,
+        "female_mean_act": 360.3200378417969,
+        "p_value": 0.187
+      },
+      {
+        "feature_idx": 401,
+        "diff": -9.953987121582031,
+        "abs_diff": 9.953987121582031,
+        "male_mean_act": 82.60087585449219,
+        "female_mean_act": 92.55486297607422,
+        "p_value": 0.468
+      },
+      {
+        "feature_idx": 441,
+        "diff": -9.048450469970703,
+        "abs_diff": 9.048450469970703,
+        "male_mean_act": 41.665611267089844,
+        "female_mean_act": 50.71406173706055,
+        "p_value": 0.329
+      },
+      {
+        "feature_idx": 5767,
+        "diff": -8.733848571777344,
+        "abs_diff": 8.733848571777344,
+        "male_mean_act": 23.880050659179688,
+        "female_mean_act": 32.61389923095703,
+        "p_value": 0.276
+      },
+      {
+        "feature_idx": 1024,
+        "diff": -8.646286010742188,
+        "abs_diff": 8.646286010742188,
+        "male_mean_act": 250.0022430419922,
+        "female_mean_act": 258.6485290527344,
+        "p_value": 0.411
+      },
+      {
+        "feature_idx": 1006,
+        "diff": 6.532916069030762,
+        "abs_diff": 6.532916069030762,
+        "male_mean_act": 15.608319282531738,
+        "female_mean_act": 9.075403213500977,
+        "p_value": 0.223
+      },
+      {
+        "feature_idx": 16167,
+        "diff": -5.95147705078125,
+        "abs_diff": 5.95147705078125,
+        "male_mean_act": 36.01347732543945,
+        "female_mean_act": 41.9649543762207,
+        "p_value": 0.629
+      },
+      {
+        "feature_idx": 7366,
+        "diff": -5.518062591552734,
+        "abs_diff": 5.518062591552734,
+        "male_mean_act": 15.092077255249023,
+        "female_mean_act": 20.610139846801758,
+        "p_value": 0.468
+      },
+      {
+        "feature_idx": 1179,
+        "diff": -5.042724609375,
+        "abs_diff": 5.042724609375,
+        "male_mean_act": 306.0974426269531,
+        "female_mean_act": 311.1401672363281,
+        "p_value": 0.678
+      },
+      {
+        "feature_idx": 1566,
+        "diff": 4.9905548095703125,
+        "abs_diff": 4.9905548095703125,
+        "male_mean_act": 175.28793334960938,
+        "female_mean_act": 170.29737854003906,
+        "p_value": 0.721
+      },
+      {
+        "feature_idx": 1818,
+        "diff": -4.969633102416992,
+        "abs_diff": 4.969633102416992,
+        "male_mean_act": 18.981258392333984,
+        "female_mean_act": 23.950891494750977,
+        "p_value": 0.494
+      },
+      {
+        "feature_idx": 621,
+        "diff": -4.9043731689453125,
+        "abs_diff": 4.9043731689453125,
+        "male_mean_act": 54.407527923583984,
+        "female_mean_act": 59.3119010925293,
+        "p_value": 0.664
+      },
+      {
+        "feature_idx": 3574,
+        "diff": -4.870941162109375,
+        "abs_diff": 4.870941162109375,
+        "male_mean_act": 75.39031982421875,
+        "female_mean_act": 80.26126098632812,
+        "p_value": 0.707
+      },
+      {
+        "feature_idx": 546,
+        "diff": 4.65570068359375,
+        "abs_diff": 4.65570068359375,
+        "male_mean_act": 32.71650314331055,
+        "female_mean_act": 28.060802459716797,
+        "p_value": 0.611
+      },
+      {
+        "feature_idx": 1613,
+        "diff": -4.385414123535156,
+        "abs_diff": 4.385414123535156,
+        "male_mean_act": 33.638427734375,
+        "female_mean_act": 38.023841857910156,
+        "p_value": 0.651
+      },
+      {
+        "feature_idx": 8424,
+        "diff": -4.19196891784668,
+        "abs_diff": 4.19196891784668,
+        "male_mean_act": 24.883281707763672,
+        "female_mean_act": 29.07525062561035,
+        "p_value": 0.426
+      }
+    ],
+    "mean_abs_gender_diff": 0.022751156240701675,
+    "max_abs_gender_diff": 22.999435424804688
+  },
+  "comparison": {
+    "note": "PT model/SAE not available. IT-only analysis.",
+    "it_n_significant": 0,
+    "it_mean_abs_diff": 0.022751156240701675,
+    "it_max_abs_diff": 22.999435424804688
+  }
+}

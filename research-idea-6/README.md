@@ -395,33 +395,49 @@ The methodology transfers to other user modeling behaviors:
 
 ## Project Status
 
-**Status**: Environment setup complete - Ready for experiments
+**Status**: COMPLETED — Cross-family study with mechanistic experiments
 
 ### Completed
 - [x] Research plan documented
-- [x] Model Diffing environment setup (Gemma 2 2B)
-- [x] User Persona Dataset created (18 prompt pairs)
-- [x] Core analysis modules implemented
-- [x] Day 1 Jupyter notebook ready
+- [x] v1: Initial probing on Qwen 2.5-0.5B (identified confound)
+- [x] v2/v3: Gemma 3 scaling study (1B, 4B, 12B) with improved methodology
+- [x] v4: Cross-family probing — 5 models, 200 questions, 4 probing variants
+- [x] Causal mediation with KL strength sweep and random direction control
+- [x] Attention head circuit tracing with progressive ablation
+- [x] SAE feature analysis with Gemma Scope 2 (16k features)
+- [x] Blog post: "Your AI Is Profiling You — Part II: Gender Mechanistic Evidence"
 
-### Next Steps
-- [ ] Run Day 1 experiments to find User Model features
-- [ ] Verify candidate features with additional prompts
-- [ ] Run sycophancy trigger analysis
-- [ ] Causal intervention experiments
+### Key Results
+
+| Model | Last-Token Acc | Q-Only Acc | Held-Out | KL Ratio | CoT Signal |
+|-------|---------------|-----------|---------|---------|-----------|
+| Gemma 3-1B | 88.3% | 99.8% | 100.0% | 1.11x | 0/16 |
+| Gemma 3-4B | 96.8% | 100.0% | 100.0% | 5.23x | 0/16 |
+| Gemma 3-12B | 100.0% | 100.0% | 100.0% | 5.31x | 0/16 |
+| Qwen 2.5-7B | 99.8% | 100.0% | 100.0% | 1.18x | 0/16 |
+| Mistral 7B | 99.5% | 100.0% | 98.8% | 1.81x | 0/16 |
+
+Mechanistic (Gemma 3 4B):
+- **Causal mediation**: 48.3% first-token KL reduction; random direction only 9.6% vs 980%
+- **Circuit tracing**: 20 heads (7.4%) cause 21.5% accuracy drop
+- **SAE analysis**: 0/16,384 significant features — gender in superposition
 
 ### Quick Start
 
 ```bash
-# Navigate to experiments
-cd experiments/
+cd experiments/notebooks
 
-# Option 1: Google Colab (recommended)
-# Upload notebooks/01_model_diffing_setup.ipynb to Colab
+# GPU: Extract hidden states (~20 min on A40)
+python extract_hidden_states.py --model gemma4b
+python extract_hidden_states.py --model mistral7b
 
-# Option 2: Local
-pip install -r requirements.txt
-jupyter lab notebooks/
+# CPU: Run probing analysis
+python analyze_probing_v4.py all
+
+# GPU: Mechanistic experiments
+python run_kl_strength_sweep.py gemma4b
+python run_circuit_tracing.py gemma4b
+python run_sae_analysis.py
 ```
 
 See [experiments/README.md](experiments/README.md) for detailed setup instructions.
@@ -429,4 +445,4 @@ See [experiments/README.md](experiments/README.md) for detailed setup instructio
 ---
 
 *Project initialized: January 2026*
-*Experiments setup: January 2026*
+*Experiments completed: February 2026*
