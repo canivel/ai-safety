@@ -22,6 +22,15 @@ Cross-family study across **5 models** (Gemma 3 1B/4B/12B, Qwen 2.5-7B, Mistral 
 
 **[Go to Completed Project (Idea 6) →](research-idea-6/)**
 
+> **COMPLETED**: Research Idea 6 (Extension) - *Implicit User Modeling: Ethnicity Probing*
+
+Extended the gender study to **ethnicity** using EEOC race/ethnicity categories (6 groups, 5 pairwise comparisons against White reference). Same 5 models, same 200 questions, same 4-variant probing pipeline. All 25 model×comparison pairs achieve **86–100% probing accuracy** (p < 0.01 for all). Ethnicity signal propagates into question representations (94.8–100% question-only accuracy) and generalizes to unseen names (90–100% held-out). Gender confound checks confirm the signal is ethnicity, not gender. Embedding baselines at 50% (chance) for all models.
+
+**Blog Series**: *Probes for AI Safety: An Interpretability Study of Implicit User Profiling in LLMs*
+- [Part I: Methodology](https://canivel.substack.com/p/your-ai-is-profiling-you)
+- [Part II: Gender](https://canivel.substack.com/p/your-ai-is-profiling-you-part-ii)
+- Part III: Ethnicity (latest)
+
 ---
 
 ## Research Ideas
@@ -86,9 +95,40 @@ python run_circuit_tracing.py gemma4b        # Attention head ablation
 python run_sae_analysis.py                   # SAE feature analysis
 ```
 
-### Blog Post
+### Blog Series
 
-**Full write-up**: [Your AI Is Profiling You — Part II: Gender Mechanistic Evidence](https://canivel.substack.com/p/your-ai-is-profiling-you-and-its?r=j986h)
+- [Part I: Methodology](https://canivel.substack.com/p/your-ai-is-profiling-you)
+- [Part II: Gender Mechanistic Evidence](https://canivel.substack.com/p/your-ai-is-profiling-you-part-ii)
+- Part III: Ethnicity (latest)
+
+---
+
+## Completed: Research Idea 6 (Extension) — Ethnicity Probing
+
+### Study Design
+
+Same pipeline as gender study extended to **ethnicity** using EEOC race/ethnicity categories. Five pairwise binary comparisons (White as reference group following audit study convention): White vs Black, White vs Hispanic, White vs Asian, White vs Native American, White vs Pacific Islander.
+
+**Dataset**: Same 200 questions × 45 names per ethnic group + 25 ethnicity-ambiguous names. Gender-balanced within each group (~22M + ~23F names).
+
+### Ethnicity Probing Results (Last-Token Accuracy)
+
+| Model | W vs Black | W vs Hispanic | W vs Asian | W vs Nat.Am. | W vs Pac.Isl. |
+|-------|-----------|---------------|------------|-------------|---------------|
+| Gemma 3-1B | 86.3% | 89.2% | 93.5% | 95.8% | 93.8% |
+| Gemma 3-4B | 94.0% | 95.5% | 97.5% | 97.0% | 97.7% |
+| Gemma 3-12B | 98.0% | 99.0% | 98.8% | 97.8% | 97.5% |
+| Qwen 2.5-7B | 95.5% | 98.0% | 98.5% | 98.5% | 97.5% |
+| Mistral 7B | 91.5% | 94.5% | 97.3% | 95.3% | 95.3% |
+
+All embedding baselines: **50.0% (chance)**. All p-values: **0.0**.
+
+### Key Findings
+
+- **Question-only probing**: 94.8–100% — ethnicity propagates beyond name tokens into shared question representations
+- **Held-out generalization**: 90–100% on unseen names — the model learns abstract ethnic category representations, not per-name lookup
+- **Gender confound check**: Same-gender-only subsets maintain high accuracy, confirming the signal is ethnicity, not gender
+- **White vs Black hardest**: Consistently lowest accuracy across models, possibly due to greater name overlap in training data
 
 ---
 

@@ -140,6 +140,19 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Large binary data files (hidden states)
+*.npz
+
+# Temp/SSH test files
+ssh_test.txt
+ssh_out.txt
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.out
+
 # OS specific files
 .DS_Store
 Thumbs.db

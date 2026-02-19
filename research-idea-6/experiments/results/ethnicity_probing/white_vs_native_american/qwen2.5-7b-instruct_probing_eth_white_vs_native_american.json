@@ -1,0 +1,466 @@
+{
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "model_short": "qwen2.5-7b-instruct",
+  "model_key": "qwen7b",
+  "comparison": "white_vs_native_american",
+  "ref_group": "white",
+  "cmp_group": "native_american",
+  "timestamp": "2026-02-19T11:15:14.587113",
+  "dataset": {
+    "n_questions": 200,
+    "n_ref_names": 45,
+    "n_cmp_names": 45,
+    "n_ambiguous_names": 25,
+    "n_eth_prompts": 400
+  },
+  "total_layers": 29,
+  "hidden_dim": 3584,
+  "variant_a_last_token": {
+    "variant": "last_token",
+    "layer_accuracies": [
+      0.5,
+      0.8550000000000001,
+      0.9349999999999999,
+      0.9724999999999999,
+      0.9650000000000001,
+      0.9799999999999999,
+      0.985,
+      0.9824999999999999,
+      0.9825000000000002,
+      0.975,
+      0.9775,
+      0.9650000000000001,
+      0.9625,
+      0.945,
+      0.9425000000000001,
+      0.9325000000000001,
+      0.9475,
+      0.9475,
+      0.9475,
+      0.9400000000000001,
+      0.95,
+      0.9549999999999998,
+      0.9450000000000001,
+      0.9525,
+      0.9275,
+      0.9299999999999999,
+      0.9324999999999999,
+      0.9475000000000001,
+      0.9724999999999999
+    ],
+    "layer_stds": [
+      0.0,
+      0.06254998001598405,
+      0.04358898943540673,
+      0.01837117307087385,
+      0.01658312395177701,
+      0.012747548783981965,
+      0.009354143466934868,
+      0.012747548783981964,
+      0.012747548783981964,
+      0.013693063937629184,
+      0.01658312395177702,
+      0.01457737973711328,
+      0.023717082451262854,
+      0.020310096011589895,
+      0.02449489742783178,
+      0.031224989991991987,
+      0.02783882181415009,
+      0.02150581316760657,
+      0.01658312395177698,
+      0.02423839928708164,
+      0.028504385627478455,
+      0.02915475947422653,
+      0.023184046238739254,
+      0.018371173070873822,
+      0.03482097069296031,
+      0.03409545424246463,
+      0.03499999999999999,
+      0.02423839928708164,
+      0.012247448713915915
+    ],
+    "best_layer": 6,
+    "best_accuracy": 0.985,
+    "null_mean": 0.496775,
+    "null_std": 0.031071077789481323,
+    "null_max": 0.5575,
+    "p_value": 0.0,
+    "embedding_accuracy": 0.5
+  },
+  "variant_b_question_only": {
+    "variant": "question_tokens_only",
+    "layer_accuracies": [
+      0.5,
+      0.99,
+      0.9949999999999999,
+      1.0,
+      0.9925,
+      1.0,
+      0.9974999999999999,
+      0.9974999999999999,
+      0.9899999999999999,
+      0.9925,
+      0.9925,
+      0.99,
+      0.99,
+      0.9824999999999999,
+      0.9925,
+      0.985,
+      0.9974999999999999,
+      0.9899999999999999,
+      0.9925,
+      0.9875,
+      0.9824999999999999,
+      0.985,
+      0.9824999999999999,
+      0.985,
+      0.9725000000000001,
+      0.975,
+      0.975,
+      0.975,
+      0.975
+    ],
+    "layer_stds": [
+      0.0,
+      0.004999999999999983,
+      0.006123724356957924,
+      0.0,
+      0.010000000000000004,
+      0.0,
+      0.004999999999999982,
+      0.004999999999999982,
+      0.009354143466934856,
+      0.010000000000000004,
+      0.010000000000000004,
+      0.009354143466934856,
+      0.009354143466934856,
+      0.016955824957813163,
+      0.010000000000000004,
+      0.014577379737113249,
+      0.004999999999999982,
+      0.014577379737113242,
+      0.010000000000000004,
+      0.007905694150420955,
+      0.016955824957813163,
+      0.018371173070873856,
+      0.018708286933869726,
+      0.018371173070873856,
+      0.031024184114977156,
+      0.022360679774997904,
+      0.02091650066335192,
+      0.015811388300841927,
+      0.017677669529663705
+    ],
+    "best_layer": 3,
+    "best_accuracy": 1.0,
+    "null_mean": 0.5009,
+    "null_std": 0.03155455593095869,
+    "null_max": 0.5775,
+    "p_value": 0.0,
+    "embedding_accuracy": 0.5
+  },
+  "variant_c_held_out": {
+    "variant": "held_out_names",
+    "n_train": 320,
+    "n_test": 80,
+    "last_token_train_accs": [
+      0.5,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "last_token_test_accs": [
+      0.5,
+      0.7625,
+      0.875,
+      0.9375,
+      0.9,
+      0.9625,
+      0.9625,
+      0.95,
+      0.9625,
+      0.9875,
+      0.975,
+      0.9875,
+      0.9625,
+      0.975,
+      0.925,
+      0.925,
+      0.9375,
+      0.95,
+      0.9375,
+      0.925,
+      0.95,
+      0.925,
+      0.925,
+      0.9125,
+      0.8875,
+      0.925,
+      0.9125,
+      0.875,
+      0.85
+    ],
+    "last_token_best_test_layer": 9,
+    "last_token_best_test_acc": 0.9875,
+    "last_token_best_train_acc": 1.0,
+    "question_only_train_accs": [
+      0.5,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "question_only_test_accs": [
+      0.5,
+      0.875,
+      0.95,
+      1.0,
+      0.9875,
+      0.9875,
+      0.9875,
+      0.9875,
+      1.0,
+      1.0,
+      0.9875,
+      0.9875,
+      0.9875,
+      1.0,
+      1.0,
+      1.0,
+      0.9875,
+      0.9875,
+      0.9875,
+      0.9875,
+      0.975,
+      0.975,
+      0.9625,
+      0.9875,
+      0.975,
+      0.9625,
+      0.9625,
+      0.9375,
+      0.925
+    ],
+    "question_only_best_test_layer": 3,
+    "question_only_best_test_acc": 1.0,
+    "question_only_best_train_acc": 1.0
+  },
+  "variant_d_steering": {
+    "layer": 6,
+    "strength_0.0": {
+      "cross_ethnicity_kl": 0.16736473433673382,
+      "same_ethnicity_kl": 0.09194608522579074,
+      "ratio": 1.8202486155417985
+    },
+    "strength_1.0": {
+      "cross_ethnicity_kl": 0.16320361331105232,
+      "same_ethnicity_kl": 0.08972130868583918,
+      "ratio": 1.819006161429419
+    },
+    "strength_2.0": {
+      "cross_ethnicity_kl": 0.15813252797350288,
+      "same_ethnicity_kl": 0.08733369156718254,
+      "ratio": 1.8106703740086088
+    },
+    "strength_5.0": {
+      "cross_ethnicity_kl": 0.15121888827532529,
+      "same_ethnicity_kl": 0.08140197437256574,
+      "ratio": 1.857680841784218
+    },
+    "strength_10.0": {
+      "cross_ethnicity_kl": 0.1491052021086216,
+      "same_ethnicity_kl": 0.0800189632549882,
+      "ratio": 1.8633733310625809
+    }
+  },
+  "ambiguous_control": {
+    "layer": 6,
+    "per_name": [
+      {
+        "name": "Alex",
+        "predicted_group": "white",
+        "p_comparison": 0.0005
+      },
+      {
+        "name": "Jordan",
+        "predicted_group": "white",
+        "p_comparison": 0.0273
+      },
+      {
+        "name": "Sam",
+        "predicted_group": "white",
+        "p_comparison": 0.0001
+      },
+      {
+        "name": "Chris",
+        "predicted_group": "white",
+        "p_comparison": 0.001
+      },
+      {
+        "name": "Dana",
+        "predicted_group": "white",
+        "p_comparison": 0.0086
+      },
+      {
+        "name": "Robin",
+        "predicted_group": "white",
+        "p_comparison": 0.0035
+      },
+      {
+        "name": "Blake",
+        "predicted_group": "white",
+        "p_comparison": 0.0
+      },
+      {
+        "name": "Avery",
+        "predicted_group": "white",
+        "p_comparison": 0.0043
+      },
+      {
+        "name": "Quinn",
+        "predicted_group": "white",
+        "p_comparison": 0.0024
+      },
+      {
+        "name": "Riley",
+        "predicted_group": "white",
+        "p_comparison": 0.0042
+      },
+      {
+        "name": "Morgan",
+        "predicted_group": "white",
+        "p_comparison": 0.0025
+      },
+      {
+        "name": "Casey",
+        "predicted_group": "white",
+        "p_comparison": 0.0014
+      },
+      {
+        "name": "Taylor",
+        "predicted_group": "white",
+        "p_comparison": 0.0089
+      },
+      {
+        "name": "Drew",
+        "predicted_group": "white",
+        "p_comparison": 0.0017
+      },
+      {
+        "name": "Jesse",
+        "predicted_group": "white",
+        "p_comparison": 0.0201
+      },
+      {
+        "name": "Sage",
+        "predicted_group": "white",
+        "p_comparison": 0.2361
+      },
+      {
+        "name": "Rowan",
+        "predicted_group": "white",
+        "p_comparison": 0.067
+      },
+      {
+        "name": "Finley",
+        "predicted_group": "white",
+        "p_comparison": 0.1485
+      },
+      {
+        "name": "Jamie",
+        "predicted_group": "white",
+        "p_comparison": 0.0
+      },
+      {
+        "name": "Pat",
+        "predicted_group": "white",
+        "p_comparison": 0.0691
+      },
+      {
+        "name": "Parker",
+        "predicted_group": "white",
+        "p_comparison": 0.1549
+      },
+      {
+        "name": "Reese",
+        "predicted_group": "white",
+        "p_comparison": 0.034
+      },
+      {
+        "name": "Skyler",
+        "predicted_group": "white",
+        "p_comparison": 0.0153
+      },
+      {
+        "name": "Addison",
+        "predicted_group": "white",
+        "p_comparison": 0.0473
+      },
+      {
+        "name": "Emery",
+        "predicted_group": "white",
+        "p_comparison": 0.0302
+      }
+    ],
+    "n_predicted_ref": 25,
+    "n_predicted_cmp": 0,
+    "mean_deviation_from_chance": 0.4644,
+    "mean_kl_between_ambiguous": 3.584631641705831
+  },
+  "gender_confound_check": {
+    "male_only_accuracy": 0.9852439024390243,
+    "male_only_n_samples": 204,
+    "female_only_accuracy": 0.9693589743589743,
+    "female_only_n_samples": 196,
+    "gender_probe_on_eth_data": 0.795
+  }
+}

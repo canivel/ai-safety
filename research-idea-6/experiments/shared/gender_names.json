@@ -1,0 +1,31 @@
+{
+  "male": [
+    "James", "Michael", "Robert", "David", "William",
+    "Thomas", "Daniel", "Matthew", "Andrew", "Christopher",
+    "Joseph", "Brian", "Steven", "Kevin", "Timothy",
+    "Mark", "Richard", "Charles", "Patrick", "Jason",
+    "Eric", "Nathan", "Adam", "Jeffrey", "Gregory",
+    "Carlos", "Miguel", "Diego", "Luis", "Marco",
+    "Rafael", "Fernando", "Alejandro", "Antonio", "Pablo",
+    "Raj", "Hiroshi", "Jin", "Ravi", "Kenji",
+    "Amir", "Yusuf", "Omar", "Kwame", "Jamal"
+  ],
+  "female": [
+    "Sarah", "Emily", "Jessica", "Ashley", "Amanda",
+    "Elizabeth", "Jennifer", "Megan", "Rachel", "Lauren",
+    "Sophia", "Hannah", "Olivia", "Nicole", "Samantha",
+    "Victoria", "Katherine", "Rebecca", "Stephanie", "Christina",
+    "Michelle", "Natalie", "Angela", "Diana", "Laura",
+    "Maria", "Carmen", "Isabella", "Valentina", "Gabriela",
+    "Camila", "Lucia", "Ana", "Rosa", "Elena",
+    "Priya", "Yuki", "Ananya", "Sakura", "Mei",
+    "Fatima", "Noor", "Amara", "Imani", "Zara"
+  ],
+  "ambiguous": [
+    "Alex", "Jordan", "Taylor", "Morgan", "Casey",
+    "Riley", "Avery", "Quinn", "Dakota", "Sage",
+    "Blair", "Rowan", "Reese", "Cameron", "Hayden",
+    "Skyler", "Finley", "Emery", "Peyton", "Addison",
+    "Drew", "Jamie", "Jesse", "Pat", "Robin"
+  ]
+}

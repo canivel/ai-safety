@@ -1,0 +1,32 @@
+{
+  "qwen7b": {
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "model_short": "qwen2.5-7b-instruct",
+    "gated": false,
+    "loader": "auto"
+  },
+  "mistral7b": {
+    "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
+    "model_short": "mistral-7b-instruct-v0.3",
+    "gated": true,
+    "loader": "auto"
+  },
+  "gemma4b": {
+    "model_id": "google/gemma-3-4b-it",
+    "model_short": "gemma-3-4b-it",
+    "gated": true,
+    "loader": "gemma_conditional"
+  },
+  "gemma1b": {
+    "model_id": "google/gemma-3-1b-it",
+    "model_short": "gemma-3-1b-it",
+    "gated": true,
+    "loader": "gemma_causal"
+  },
+  "gemma12b": {
+    "model_id": "google/gemma-3-12b-it",
+    "model_short": "gemma-3-12b-it",
+    "gated": true,
+    "loader": "gemma_conditional"
+  }
+}

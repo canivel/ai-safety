@@ -422,7 +422,7 @@ Mechanistic (Gemma 3 4B):
 - **Circuit tracing**: 20 heads (7.4%) cause 21.5% accuracy drop
 - **SAE analysis**: 0/16,384 significant features — gender in superposition
 
-### Quick Start
+### Quick Start (Gender)
 
 ```bash
 cd experiments/notebooks
@@ -440,9 +440,90 @@ python run_circuit_tracing.py gemma4b
 python run_sae_analysis.py
 ```
 
+---
+
+## Ethnicity Extension — EEOC Race/Ethnicity Probing
+
+Extended the gender study to **ethnicity** using EEOC (Equal Employment Opportunity Commission) race/ethnicity categories based on OMB federal standards. Five pairwise binary comparisons with White as reference group (following audit study convention from Bertrand & Mullainathan 2004).
+
+### Comparisons
+
+| Comparison | Ref Group | Cmp Group | Names/Group |
+|-----------|-----------|-----------|-------------|
+| White vs Black | White (45) | Black (45) | Gender-balanced (~22M + ~23F) |
+| White vs Hispanic | White (45) | Hispanic (45) | Gender-balanced |
+| White vs Asian | White (45) | Asian (45) | East + South Asian names |
+| White vs Native American | White (45) | Native American (45) | Lakota, Cherokee, Navajo, etc. |
+| White vs Pacific Islander | White (45) | Pacific Islander (45) | Hawaiian, Samoan, Tongan |
+
+Plus 25 ethnicity-ambiguous control names (Alex, Jordan, Sam, etc.).
+
+### Ethnicity Probing Results
+
+#### Last-Token Probing (Variant A)
+
+| Model | W vs Black | W vs Hispanic | W vs Asian | W vs Nat.Am. | W vs Pac.Isl. |
+|-------|-----------|---------------|------------|-------------|---------------|
+| Gemma 3-1B | 86.3% | 89.2% | 93.5% | 95.8% | 93.8% |
+| Gemma 3-4B | 94.0% | 95.5% | 97.5% | 97.0% | 97.7% |
+| Gemma 3-12B | 98.0% | 99.0% | 98.8% | 97.8% | 97.5% |
+| Qwen 2.5-7B | 95.5% | 98.0% | 98.5% | 98.5% | 97.5% |
+| Mistral 7B | 91.5% | 94.5% | 97.3% | 95.3% | 95.3% |
+
+#### Question-Only Probing (Variant B)
+
+| Model | W vs Black | W vs Hispanic | W vs Asian | W vs Nat.Am. | W vs Pac.Isl. |
+|-------|-----------|---------------|------------|-------------|---------------|
+| Gemma 3-1B | 94.8% | 96.3% | 97.3% | 96.8% | 96.8% |
+| Gemma 3-4B | 97.8% | 99.0% | 99.7% | 99.3% | 99.5% |
+| Gemma 3-12B | 98.8% | 100.0% | 100.0% | 99.7% | 99.7% |
+| Qwen 2.5-7B | 99.0% | 100.0% | 100.0% | 100.0% | 100.0% |
+| Mistral 7B | 98.8% | 99.7% | 100.0% | 99.3% | 100.0% |
+
+#### Held-Out Name Generalization (Variant C)
+
+| Model | W vs Black | W vs Hispanic | W vs Asian | W vs Nat.Am. | W vs Pac.Isl. |
+|-------|-----------|---------------|------------|-------------|---------------|
+| Gemma 3-1B | 90.0% | 97.5% | 98.8% | 97.5% | 96.3% |
+| Gemma 3-4B | 91.3% | 98.8% | 100.0% | 100.0% | 100.0% |
+| Gemma 3-12B | 96.3% | 100.0% | 100.0% | 100.0% | 100.0% |
+| Qwen 2.5-7B | 93.8% | 100.0% | 100.0% | 100.0% | 100.0% |
+| Mistral 7B | 96.3% | 100.0% | 100.0% | 100.0% | 100.0% |
+
+All embedding baselines: **50.0% (chance)**. All p-values: **0.0**.
+
+### Key Findings
+
+- **Universal encoding**: All 5 models encode perceived ethnicity from names across all EEOC categories
+- **Question-only propagation**: 94.8–100% accuracy with name tokens excluded — ethnicity signal propagates into shared representations
+- **Held-out generalization**: 90–100% on unseen names — abstract ethnic category encoding, not name memorization
+- **Gender confound check**: Same-gender-only probing maintains high accuracy, confirming the signal is ethnicity, not gender
+- **White vs Black hardest**: Consistently lowest accuracy, possibly due to greater name overlap in training corpora
+- **Steering**: KL divergence ratios up to 22.9x (Gemma 3-12B, White vs Native American)
+
+### Quick Start (Ethnicity)
+
+```bash
+cd experiments/ethnicity
+
+# GPU: Extract hidden states for one model + comparison (~20 min on A40)
+python extract_hidden_states_eth.py gemma4b white_vs_black
+
+# CPU: Run probing analysis
+python analyze_probing_eth.py gemma4b white_vs_black
+
+# Run all 25 jobs
+for comp in white_vs_black white_vs_hispanic white_vs_asian white_vs_native_american white_vs_pacific_islander; do
+  for model in gemma1b gemma4b gemma12b qwen7b mistral7b; do
+    python extract_hidden_states_eth.py $model $comp
+  done
+done
+```
+
 See [experiments/README.md](experiments/README.md) for detailed setup instructions.
 
 ---
 
 *Project initialized: January 2026*
-*Experiments completed: February 2026*
+*Gender experiments completed: February 2026*
+*Ethnicity extension completed: February 2026*

@@ -1,0 +1,450 @@
+{
+  "model": "google/gemma-3-1b-it",
+  "model_short": "gemma-3-1b-it",
+  "model_key": "gemma1b",
+  "comparison": "white_vs_asian",
+  "ref_group": "white",
+  "cmp_group": "asian",
+  "timestamp": "2026-02-19T11:12:47.277453",
+  "dataset": {
+    "n_questions": 200,
+    "n_ref_names": 45,
+    "n_cmp_names": 45,
+    "n_ambiguous_names": 25,
+    "n_eth_prompts": 400
+  },
+  "total_layers": 27,
+  "hidden_dim": 1152,
+  "variant_a_last_token": {
+    "variant": "last_token",
+    "layer_accuracies": [
+      0.5,
+      0.845,
+      0.9349999999999999,
+      0.885,
+      0.85,
+      0.775,
+      0.7775000000000001,
+      0.79,
+      0.7875,
+      0.75,
+      0.7150000000000001,
+      0.735,
+      0.745,
+      0.775,
+      0.7325000000000002,
+      0.7150000000000001,
+      0.71,
+      0.7,
+      0.675,
+      0.675,
+      0.6775,
+      0.6725,
+      0.6875,
+      0.7074999999999999,
+      0.7150000000000001,
+      0.7449999999999999,
+      0.725
+    ],
+    "layer_stds": [
+      0.0,
+      0.0484767985741633,
+      0.02783882181415012,
+      0.03482097069296032,
+      0.03791437722025776,
+      0.032596012026013234,
+      0.045689167206242665,
+      0.032977264895682305,
+      0.02091650066335192,
+      0.05863019699779287,
+      0.04636809247747852,
+      0.031024184114977114,
+      0.04227883631321939,
+      0.03535533905932738,
+      0.04782781617427248,
+      0.021505813167606556,
+      0.028939592256975562,
+      0.03622844186547361,
+      0.02622022120425378,
+      0.03259601202601324,
+      0.02783882181415011,
+      0.02783882181415012,
+      0.032596012026013255,
+      0.04153311931459037,
+      0.01837117307087385,
+      0.023184046238739254,
+      0.017677669529663705
+    ],
+    "best_layer": 2,
+    "best_accuracy": 0.9349999999999999,
+    "null_mean": 0.497425,
+    "null_std": 0.03256427298436125,
+    "null_max": 0.5675,
+    "p_value": 0.0,
+    "embedding_accuracy": 0.5
+  },
+  "variant_b_question_only": {
+    "variant": "question_tokens_only",
+    "layer_accuracies": [
+      0.5,
+      0.7849999999999999,
+      0.9425000000000001,
+      0.9375,
+      0.8625,
+      0.9625,
+      0.9275,
+      0.9524999999999999,
+      0.93,
+      0.9375,
+      0.9375,
+      0.9349999999999999,
+      0.9724999999999999,
+      0.9575000000000001,
+      0.96,
+      0.9625,
+      0.9675,
+      0.9549999999999998,
+      0.9425000000000001,
+      0.9274999999999999,
+      0.9149999999999998,
+      0.9400000000000001,
+      0.9575000000000001,
+      0.95,
+      0.9649999999999999,
+      0.9724999999999999,
+      0.9675
+    ],
+    "layer_stds": [
+      0.0,
+      0.02783882181415008,
+      0.023184046238739254,
+      0.023717082451262844,
+      0.023717082451262844,
+      0.013693063937629145,
+      0.02893959225697557,
+      0.012247448713915888,
+      0.021794494717703373,
+      0.01581138830084191,
+      0.02622022120425379,
+      0.014577379737113242,
+      0.019999999999999997,
+      0.010000000000000014,
+      0.009354143466934868,
+      0.013693063937629145,
+      0.016955824957813174,
+      0.010000000000000014,
+      0.016955824957813174,
+      0.026692695630078294,
+      0.026692695630078266,
+      0.022912878474779203,
+      0.018708286933869687,
+      0.013693063937629145,
+      0.01837117307087385,
+      0.01837117307087385,
+      0.012747548783981983
+    ],
+    "best_layer": 12,
+    "best_accuracy": 0.9724999999999999,
+    "null_mean": 0.498825,
+    "null_std": 0.03373880369841232,
+    "null_max": 0.565,
+    "p_value": 0.0,
+    "embedding_accuracy": 0.5
+  },
+  "variant_c_held_out": {
+    "variant": "held_out_names",
+    "n_train": 320,
+    "n_test": 80,
+    "last_token_train_accs": [
+      0.5,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "last_token_test_accs": [
+      0.5,
+      0.85,
+      0.9375,
+      0.9,
+      0.7875,
+      0.725,
+      0.775,
+      0.7375,
+      0.7375,
+      0.725,
+      0.7375,
+      0.675,
+      0.7375,
+      0.725,
+      0.7125,
+      0.7375,
+      0.6875,
+      0.625,
+      0.625,
+      0.6125,
+      0.6375,
+      0.6375,
+      0.6375,
+      0.675,
+      0.7125,
+      0.725,
+      0.7375
+    ],
+    "last_token_best_test_layer": 2,
+    "last_token_best_test_acc": 0.9375,
+    "last_token_best_train_acc": 1.0,
+    "question_only_train_accs": [
+      0.5,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "question_only_test_accs": [
+      0.5,
+      0.7625,
+      0.9125,
+      0.875,
+      0.8625,
+      0.9375,
+      0.9375,
+      0.925,
+      0.8625,
+      0.925,
+      0.9,
+      0.875,
+      0.9625,
+      0.95,
+      0.925,
+      0.9375,
+      0.9875,
+      0.9625,
+      0.9375,
+      0.9125,
+      0.9,
+      0.9125,
+      0.9375,
+      0.9375,
+      0.925,
+      0.925,
+      0.9375
+    ],
+    "question_only_best_test_layer": 16,
+    "question_only_best_test_acc": 0.9875,
+    "question_only_best_train_acc": 1.0
+  },
+  "variant_d_steering": {
+    "layer": 2,
+    "strength_0.0": {
+      "cross_ethnicity_kl": 0.0005408197815268068,
+      "same_ethnicity_kl": 0.0003924523024397786,
+      "ratio": 1.3780522579805607
+    },
+    "strength_1.0": {
+      "cross_ethnicity_kl": 0.0005888923646853073,
+      "same_ethnicity_kl": 0.00047040431116329273,
+      "ratio": 1.251885560378896
+    },
+    "strength_2.0": {
+      "cross_ethnicity_kl": 0.0004973898291336809,
+      "same_ethnicity_kl": 0.0004025448361426243,
+      "ratio": 1.2356134881766372
+    },
+    "strength_5.0": {
+      "cross_ethnicity_kl": 0.0005679163873082871,
+      "same_ethnicity_kl": 0.0004406826798731345,
+      "ratio": 1.2887195554673971
+    },
+    "strength_10.0": {
+      "cross_ethnicity_kl": 0.0007009339326032205,
+      "same_ethnicity_kl": 0.00046270446455309866,
+      "ratio": 1.514863128196126
+    }
+  },
+  "ambiguous_control": {
+    "layer": 2,
+    "per_name": [
+      {
+        "name": "Alex",
+        "predicted_group": "white",
+        "p_comparison": 0.1275
+      },
+      {
+        "name": "Jordan",
+        "predicted_group": "white",
+        "p_comparison": 0.2357
+      },
+      {
+        "name": "Sam",
+        "predicted_group": "white",
+        "p_comparison": 0.0015
+      },
+      {
+        "name": "Chris",
+        "predicted_group": "white",
+        "p_comparison": 0.0539
+      },
+      {
+        "name": "Dana",
+        "predicted_group": "white",
+        "p_comparison": 0.2314
+      },
+      {
+        "name": "Robin",
+        "predicted_group": "white",
+        "p_comparison": 0.0473
+      },
+      {
+        "name": "Blake",
+        "predicted_group": "white",
+        "p_comparison": 0.0001
+      },
+      {
+        "name": "Avery",
+        "predicted_group": "white",
+        "p_comparison": 0.0294
+      },
+      {
+        "name": "Quinn",
+        "predicted_group": "white",
+        "p_comparison": 0.002
+      },
+      {
+        "name": "Riley",
+        "predicted_group": "white",
+        "p_comparison": 0.0002
+      },
+      {
+        "name": "Morgan",
+        "predicted_group": "white",
+        "p_comparison": 0.0143
+      },
+      {
+        "name": "Casey",
+        "predicted_group": "white",
+        "p_comparison": 0.0093
+      },
+      {
+        "name": "Taylor",
+        "predicted_group": "white",
+        "p_comparison": 0.1209
+      },
+      {
+        "name": "Drew",
+        "predicted_group": "white",
+        "p_comparison": 0.0007
+      },
+      {
+        "name": "Jesse",
+        "predicted_group": "white",
+        "p_comparison": 0.0713
+      },
+      {
+        "name": "Sage",
+        "predicted_group": "white",
+        "p_comparison": 0.3822
+      },
+      {
+        "name": "Rowan",
+        "predicted_group": "white",
+        "p_comparison": 0.0368
+      },
+      {
+        "name": "Finley",
+        "predicted_group": "white",
+        "p_comparison": 0.0359
+      },
+      {
+        "name": "Jamie",
+        "predicted_group": "white",
+        "p_comparison": 0.0002
+      },
+      {
+        "name": "Pat",
+        "predicted_group": "white",
+        "p_comparison": 0.1045
+      },
+      {
+        "name": "Parker",
+        "predicted_group": "white",
+        "p_comparison": 0.1203
+      },
+      {
+        "name": "Reese",
+        "predicted_group": "white",
+        "p_comparison": 0.0315
+      },
+      {
+        "name": "Skyler",
+        "predicted_group": "asian",
+        "p_comparison": 0.9645
+      },
+      {
+        "name": "Addison",
+        "predicted_group": "white",
+        "p_comparison": 0.0549
+      },
+      {
+        "name": "Emery",
+        "predicted_group": "white",
+        "p_comparison": 0.2373
+      }
+    ],
+    "n_predicted_ref": 24,
+    "n_predicted_cmp": 1,
+    "mean_deviation_from_chance": 0.4206,
+    "mean_kl_between_ambiguous": 0.013456058494436244
+  },
+  "gender_confound_check": {
+    "male_only_accuracy": 0.896951219512195,
+    "male_only_n_samples": 204,
+    "female_only_accuracy": 0.8516666666666666,
+    "female_only_n_samples": 196,
+    "gender_probe_on_eth_data": 0.7175
+  }
+}

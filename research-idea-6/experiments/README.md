@@ -37,7 +37,13 @@ experiments/
 ├── requirements.txt          # Python dependencies
 ├── docs/
 │   └── observable_signal_experiment.md  # Output-only detection experiment
-├── notebooks/
+├── shared/                   # Shared data files (gender + ethnicity)
+│   ├── questions.json               # 200 questions used across all experiments
+│   ├── gender_names.json            # Male/female/ambiguous name lists
+│   ├── ethnicity_names.json         # EEOC ethnicity name lists (6 groups)
+│   ├── model_registry.json          # Model configs
+│   └── load_data.py                 # Data loader module
+├── notebooks/                # Gender experiment scripts
 │   ├── 01_model_diffing_setup.ipynb    # Day 1 notebook (early exploration)
 │   ├── extract_hidden_states.py        # GPU: hidden state extraction for all models
 │   ├── analyze_probing_v4.py           # CPU: 4-variant probing analysis
@@ -48,6 +54,11 @@ experiments/
 │   ├── run_kl_strength_sweep.py       # GPU: KL strength sweep (dose-response)
 │   ├── run_circuit_tracing.py         # GPU: attention head circuit tracing
 │   └── run_sae_analysis.py           # GPU: SAE feature analysis with Gemma Scope 2
+├── ethnicity/                # Ethnicity experiment scripts
+│   ├── extract_hidden_states_eth.py   # GPU: ethnicity hidden state extraction
+│   ├── analyze_probing_eth.py         # CPU: ethnicity probing analysis
+│   ├── run_kl_strength_sweep_eth.py   # GPU: ethnicity causal mediation
+│   └── run_circuit_tracing_eth.py     # GPU: ethnicity circuit tracing
 ├── data/
 │   └── user_persona_prompts.json     # Prompt dataset
 ├── src/
@@ -59,7 +70,13 @@ experiments/
 │   └── visualization.py      # Plotting and dashboards
 ├── results/
 │   ├── gemma3_gender_detection/       # v1-v3 results (Gemma 3 family)
-│   ├── cross_family_probing_v4/       # v4: 5 models, 200 questions
+│   ├── cross_family_probing_v4/       # v4: 5 models, 200 questions (gender)
+│   ├── ethnicity_probing/             # Ethnicity probing results
+│   │   ├── white_vs_black/            # 5 models × probing + steering JSONs
+│   │   ├── white_vs_hispanic/
+│   │   ├── white_vs_asian/
+│   │   ├── white_vs_native_american/
+│   │   └── white_vs_pacific_islander/
 │   ├── causal_mediation/              # Causal mediation + KL sweep results
 │   ├── circuit_tracing/               # Attention head analysis results
 │   └── sae_analysis/                  # SAE feature analysis results
@@ -179,7 +196,7 @@ Located at `data/user_persona_prompts.json`:
 
 ## Results Summary
 
-### Cross-Family Probing v4 (5 models, 200 questions)
+### Gender Probing — Cross-Family v4 (5 models, 200 questions)
 
 | Model | Last-Token | Q-Only | Held-Out | KL Ratio | CoT Signal |
 |-------|-----------|--------|---------|---------|-----------|
@@ -191,11 +208,57 @@ Located at `data/user_persona_prompts.json`:
 
 Embedding-layer accuracy: **50.0% (chance)** for all models — confirming signal is from transformer processing.
 
-### Mechanistic Experiments (Gemma 3 4B)
+### Gender Mechanistic Experiments (Gemma 3 4B)
 
 - **Causal mediation**: 48.3% first-token KL reduction at strength=1.0; random direction control only 9.6% change vs 980%
 - **Circuit tracing**: 20 heads (7.4% of 272) cause 21.5% accuracy drop. Three-phase circuit: L4-8 encoding → L14 propagation → L30 aggregation
 - **SAE analysis**: 0/16,384 Gemma Scope 2 features show significant gender differential — gender encoded in superposition
+
+### Ethnicity Probing — 5 models, 5 EEOC comparisons (25 experiments)
+
+#### Last-Token Probing Accuracy
+
+| Model | W vs Black | W vs Hispanic | W vs Asian | W vs Nat.Am. | W vs Pac.Isl. |
+|-------|-----------|---------------|------------|-------------|---------------|
+| Gemma 3-1B | 86.3% | 89.2% | 93.5% | 95.8% | 93.8% |
+| Gemma 3-4B | 94.0% | 95.5% | 97.5% | 97.0% | 97.7% |
+| Gemma 3-12B | 98.0% | 99.0% | 98.8% | 97.8% | 97.5% |
+| Qwen 2.5-7B | 95.5% | 98.0% | 98.5% | 98.5% | 97.5% |
+| Mistral 7B | 91.5% | 94.5% | 97.3% | 95.3% | 95.3% |
+
+#### Question-Only Probing Accuracy
+
+| Model | W vs Black | W vs Hispanic | W vs Asian | W vs Nat.Am. | W vs Pac.Isl. |
+|-------|-----------|---------------|------------|-------------|---------------|
+| Gemma 3-1B | 94.8% | 96.3% | 97.3% | 96.8% | 96.8% |
+| Gemma 3-4B | 97.8% | 99.0% | 99.7% | 99.3% | 99.5% |
+| Gemma 3-12B | 98.8% | 100.0% | 100.0% | 99.7% | 99.7% |
+| Qwen 2.5-7B | 99.0% | 100.0% | 100.0% | 100.0% | 100.0% |
+| Mistral 7B | 98.8% | 99.7% | 100.0% | 99.3% | 100.0% |
+
+#### Held-Out Name Generalization
+
+| Model | W vs Black | W vs Hispanic | W vs Asian | W vs Nat.Am. | W vs Pac.Isl. |
+|-------|-----------|---------------|------------|-------------|---------------|
+| Gemma 3-1B | 90.0% | 97.5% | 98.8% | 97.5% | 96.3% |
+| Gemma 3-4B | 91.3% | 98.8% | 100.0% | 100.0% | 100.0% |
+| Gemma 3-12B | 96.3% | 100.0% | 100.0% | 100.0% | 100.0% |
+| Qwen 2.5-7B | 93.8% | 100.0% | 100.0% | 100.0% | 100.0% |
+| Mistral 7B | 96.3% | 100.0% | 100.0% | 100.0% | 100.0% |
+
+All embedding baselines: **50.0% (chance)**. All p-values: **0.0**.
+
+### Ethnicity Experiment Workflow
+
+```bash
+cd experiments/ethnicity
+
+# GPU: Extract hidden states (~20 min per model×comparison on A40)
+python extract_hidden_states_eth.py gemma4b white_vs_black
+
+# CPU: Run probing analysis
+python analyze_probing_eth.py gemma4b white_vs_black
+```
 
 ## Troubleshooting
 
@@ -223,5 +286,6 @@ Embedding-layer accuracy: **50.0% (chance)** for all models — confirming signa
 ---
 
 *Created: January 2026*
-*Experiments completed: February 2026*
-*Research Idea 6: Implicit User Modeling — Gender Mechanistic Evidence*
+*Gender experiments completed: February 2026*
+*Ethnicity extension completed: February 2026*
+*Research Idea 6: Implicit User Modeling — Gender & Ethnicity Mechanistic Evidence*

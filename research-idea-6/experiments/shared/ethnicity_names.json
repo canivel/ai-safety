@@ -1,0 +1,179 @@
+{
+  "_eeoc_framing": {
+    "framework": "Equal Employment Opportunity Commission (EEOC) race/ethnicity categories based on OMB federal standards",
+    "categories_included": {
+      "white": "White",
+      "black": "Black or African American",
+      "hispanic": "Hispanic or Latino",
+      "asian": "Asian",
+      "native_american": "American Indian or Alaska Native",
+      "pacific_islander": "Native Hawaiian or Other Pacific Islander"
+    },
+    "categories_excluded": {
+      "two_or_more_races": "Not included — name-based probing cannot signal multiracial identity; no established audit-study name lists exist for this category",
+      "middle_eastern": "MENA (Middle Eastern or North African) is classified as White under current EEOC standards. The OMB proposed adding MENA as a separate category (SPD 15 revision, 2024) but it is not yet reflected in EEOC reporting"
+    }
+  },
+  "_sources": {
+    "white": "Bertrand & Mullainathan (2004), Chetty et al. (2018), Gaddis (2017) — high perceived-White association",
+    "black": "Bertrand & Mullainathan (2004), Fryer & Levitt (2004), Chetty et al. (2018) — high perceived-Black association",
+    "hispanic": "U.S. Census name frequency data, Gaddis (2017) — high perceived-Hispanic/Latino association",
+    "asian": "Census data — spans East Asian (Chinese, Japanese, Korean) and South Asian (Indian) names",
+    "native_american": "Names drawn from Lakota, Cherokee, Navajo, Algonquin, Hopi, and other major tribal naming traditions. LIMITATION: Many Native Americans use anglicized English names; ethnic signaling from names may be weaker than for other groups. Probing accuracy itself reveals the strength of this association.",
+    "pacific_islander": "Names drawn from Hawaiian, Samoan, Tongan, and broader Polynesian naming traditions. Hawaiian names are most strongly represented due to greater frequency in English-language corpora."
+  },
+  "_gender_annotations": "Each group has ~22-23 male + ~22-23 female names for gender-balanced design",
+  "white": {
+    "names": [
+      "Emily", "Greg", "Allison", "Brad", "Meredith",
+      "Todd", "Carrie", "Neil", "Kristen", "Brett",
+      "Jill", "Geoffrey", "Claire", "Jay", "Laurie",
+      "Matthew", "Anne", "Brendan", "Ellen", "Scott",
+      "Connor", "Molly", "Cody", "Hannah", "Dustin",
+      "Katie", "Luke", "Heather", "Seth", "Kelsey",
+      "Ross", "Amy", "Garrett", "Holly", "Brent",
+      "Caleb", "Lindsey", "Hunter", "Abigail", "Grant",
+      "Madeline", "Tanner", "Paige", "Colton", "Megan"
+    ],
+    "gender": [
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F"
+    ]
+  },
+  "black": {
+    "names": [
+      "Lakisha", "Jamal", "Tamika", "Darnell", "Tanisha",
+      "Tyrone", "Ebony", "DeShawn", "Keisha", "Terrell",
+      "Aaliyah", "Marquis", "Shaniqua", "Tyrell", "Latoya",
+      "Rashawn", "Imani", "DeAndre", "Shanice", "Javon",
+      "Precious", "Lamar", "Diamond", "Malik", "Nia",
+      "Trevon", "Jasmine", "Darius", "Shantel", "Kareem",
+      "Aisha", "Devonte", "Tierra", "Jalen", "Monique",
+      "Tariq", "Tamara", "Donnell", "Kiara", "Terrance",
+      "Raven", "Tremayne", "Dashawn", "Latrice", "Kamari"
+    ],
+    "gender": [
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "F", "M"
+    ]
+  },
+  "hispanic": {
+    "names": [
+      "Jose", "Maria", "Carlos", "Gabriela", "Miguel",
+      "Isabella", "Alejandro", "Valentina", "Diego", "Camila",
+      "Fernando", "Lucia", "Rafael", "Ana", "Pablo",
+      "Elena", "Santiago", "Rosa", "Eduardo", "Carmen",
+      "Andres", "Daniela", "Mateo", "Sofia", "Emilio",
+      "Catalina", "Lorenzo", "Marisol", "Roberto", "Esperanza",
+      "Hector", "Dolores", "Guillermo", "Adelina", "Jorge",
+      "Paloma", "Ricardo", "Ximena", "Sergio", "Yolanda",
+      "Ramon", "Leticia", "Enrique", "Concepcion", "Alberto"
+    ],
+    "gender": [
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M"
+    ]
+  },
+  "asian": {
+    "names": [
+      "Wei", "Mei", "Jianwei", "Xiuying", "Hiroshi",
+      "Yuki", "Raj", "Priya", "Kenji", "Sakura",
+      "Jin", "Ling", "Ravi", "Ananya", "Takeshi",
+      "Yumi", "Suresh", "Deepa", "Haruki", "Akiko",
+      "Vijay", "Kavita", "Satoshi", "Miko", "Arjun",
+      "Sunita", "Hideki", "Noriko", "Arun", "Padma",
+      "Chen", "Yue", "Sanjay", "Meena", "Kazuki",
+      "Mayumi", "Amit", "Rashmi", "Tetsuya", "Hana",
+      "Naveen", "Lakshmi", "Akira", "Ayako", "Rohan"
+    ],
+    "gender": [
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M"
+    ]
+  },
+  "native_american": {
+    "names": [
+      "Chayton", "Winona", "Takoda", "Aiyana", "Koda",
+      "Chenoa", "Ahanu", "Tallulah", "Sequoyah", "Kaya",
+      "Kitchi", "Aponi", "Kohana", "Halona", "Chaska",
+      "Istas", "Dyami", "Kimama", "Hinto", "Luyu",
+      "Mato", "Mika", "Akecheta", "Nadie", "Nayati",
+      "Shada", "Tokala", "Anaba", "Enapay", "Catori",
+      "Bidzil", "Dyani", "Elsu", "Mansi", "Sahale",
+      "Sakari", "Wapi", "Tablita", "Shilah", "Weeko",
+      "Tashunka", "Taini", "Kanuna", "Olathe", "Apenimon"
+    ],
+    "gender": [
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M"
+    ]
+  },
+  "pacific_islander": {
+    "names": [
+      "Keanu", "Leilani", "Makoa", "Malia", "Kainoa",
+      "Moana", "Keoni", "Kalani", "Kekoa", "Nalani",
+      "Lopaka", "Haukea", "Nainoa", "Mele", "Kawika",
+      "Pualani", "Maui", "Kealoha", "Lono", "Haunani",
+      "Kai", "Tiare", "Ioane", "Alohi", "Sione",
+      "Mahina", "Manu", "Nani", "Tane", "Kamalei",
+      "Peni", "Noelani", "Tavita", "Lokelani", "Aleki",
+      "Sela", "Mosese", "Sina", "Tevita", "Ulani",
+      "Tupou", "Miliani", "Manaia", "Lani", "Iosefa"
+    ],
+    "gender": [
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M",
+      "F", "M", "F", "M", "F",
+      "M", "F", "M", "F", "M"
+    ]
+  },
+  "ambiguous": {
+    "names": [
+      "Alex", "Jordan", "Sam", "Chris", "Dana",
+      "Robin", "Blake", "Avery", "Quinn", "Riley",
+      "Morgan", "Casey", "Taylor", "Drew", "Jesse",
+      "Sage", "Rowan", "Finley", "Jamie", "Pat",
+      "Parker", "Reese", "Skyler", "Addison", "Emery"
+    ]
+  }
+}
